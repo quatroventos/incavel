@@ -463,6 +463,47 @@ if ( function_exists( 'register_nav_menus' ) ) {
 	);
 }
 
+/**
+ * Helper: devolve o host público atual (HTTP_X_FORWARDED_HOST ou HTTP_HOST).
+ */
+function incavel_get_current_public_host() {
+	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) {
+		$host = explode( ',', $_SERVER['HTTP_X_FORWARDED_HOST'] )[0];
+		return trim( $host );
+	}
+
+	if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
+		return $_SERVER['HTTP_HOST'];
+	}
+
+	return 'incavel.com.br';
+}
+
+/**
+ * Substitui incavel.com.br pelo domínio atual em conteúdos HTML (posts, menus, widgets).
+ */
+function incavel_replace_domain_in_html( $html ) {
+	if ( empty( $html ) ) {
+		return $html;
+	}
+
+	$host   = incavel_get_current_public_host();
+	$scheme = ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) ? 'https' : 'http';
+	$current = $scheme . '://' . $host;
+
+	$search  = array(
+		'https://incavel.com.br',
+		'http://incavel.com.br',
+	);
+
+	return str_replace( $search, $current, $html );
+}
+
+add_filter( 'the_content', 'incavel_replace_domain_in_html', 20 );
+add_filter( 'widget_text', 'incavel_replace_domain_in_html', 20 );
+add_filter( 'widget_text_content', 'incavel_replace_domain_in_html', 20 );
+add_filter( 'wp_nav_menu', 'incavel_replace_domain_in_html', 20 );
+
 // Custom Nav Walker: wp_bootstrap_navwalker().
 $custom_walker = __DIR__ . '/inc/wp-bootstrap-navwalker.php';
 if ( is_readable( $custom_walker ) ) {
