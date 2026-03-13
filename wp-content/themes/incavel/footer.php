@@ -148,7 +148,14 @@ document.addEventListener('DOMContentLoaded', function() {
     var links = document.querySelectorAll('a[href]');
     links.forEach(function(link) {
         var href = link.getAttribute('href');
-        var novoHref = href.replace(/,\s*incavel\.com\.br/gi, '');
+        if (!href) {
+            return;
+        }
+        // Remove sufixos \", incavel.com.br\" e troca domínios absolutos de incavel.com.br
+        // por caminhos relativos, mantendo o domínio atual da filial.
+        var novoHref = href
+            .replace(/,\s*incavel\.com\.br/gi, '')
+            .replace(/^https?:\/\/incavel\.com\.br/gi, '');
         if (href !== novoHref) {
             link.setAttribute('href', novoHref);
         }
