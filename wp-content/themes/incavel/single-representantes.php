@@ -147,10 +147,8 @@ the_post();
 						// Loop pelos produtos do ACF
 						foreach ($produtos as $produto) :
 							$thumbnail_url = get_the_post_thumbnail_url($produto->ID, 'thumbnail');
-							$produto_link  = get_permalink( $produto->ID );
-							if ( function_exists( 'incavel_replace_domain_in_html' ) ) {
-								$produto_link = incavel_replace_domain_in_html( $produto_link );
-							}
+							// Usa URL relativa para manter sempre o domínio atual (proxy/mascarado).
+							$produto_link  = wp_make_link_relative( get_permalink( $produto->ID ) );
 							?>
 							<div class="home-produto">
 								<div class="home-produto-item" style="background-image: url('<?php echo esc_url($thumbnail_url); ?>');">
@@ -176,10 +174,8 @@ the_post();
 						if ($query->have_posts()) :
 							while ($query->have_posts()) : $query->the_post();
 								$thumbnail_url = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
-								$fallback_link = get_permalink();
-								if ( function_exists( 'incavel_replace_domain_in_html' ) ) {
-									$fallback_link = incavel_replace_domain_in_html( $fallback_link );
-								}
+								// Usa URL relativa também no fallback.
+								$fallback_link = wp_make_link_relative( get_permalink() );
 								?>
 								<div class="home-produto">
 									<div class="home-produto-item" style="background-image: url('<?php echo esc_url($thumbnail_url); ?>');">
