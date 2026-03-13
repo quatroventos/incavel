@@ -9,9 +9,26 @@ the_post();
 
     $contato = get_field('contato');
     $search = array(' ','-', '(', ')');
-		
+
     $wamelink = 'https://wa.me/'.str_replace($search, '', $contato['whatsapp']);
-	
+
+    // Grava o WhatsApp desta revenda em um cookie, para ser reutilizado em páginas de produto
+    // quando o acesso vier por domínio de filial.
+    ?>
+    <script>
+        (function() {
+            try {
+                var host = window.location.hostname.replace(/^www\./, '');
+                if (host !== 'incavel.com.br') {
+                    var wamelink = <?php echo json_encode( $wamelink ); ?>;
+                    if (wamelink) {
+                        document.cookie = 'revenda_whatsapp=' + encodeURIComponent(wamelink) + '; path=/; max-age=' + (7*24*60*60);
+                    }
+                }
+            } catch (e) {}
+        })();
+    </script>
+    <?php
 ?>
 
 <div id="post-<?php the_ID(); ?>" <?php post_class( 'content' ); ?> class="page filial">

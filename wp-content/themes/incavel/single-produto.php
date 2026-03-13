@@ -36,10 +36,22 @@ if ( have_posts() ) {
                 <h2><?php the_title(); ?></h2>
                 <p><?php the_content(); ?></p>
 				<?php
-				// WhatsApp: usa o da revenda quando não estiver no domínio principal.
-				$produto_wamelink = incavel_get_revenda_whatsapp_link_for_current_domain();
+				$produto_wamelink = '';
+
+				// 1) Se houver cookie de revenda (setado na página de representantes) e não estivermos no domínio principal, usa ele.
+				$host = incavel_get_current_public_host();
+				$host = preg_replace( '/^www\./', '', $host );
+				if ( 'incavel.com.br' !== $host && ! empty( $_COOKIE['revenda_whatsapp'] ) ) {
+					$produto_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
+				}
+
+				// 2) Se não tiver cookie, tenta descobrir a revenda pelo domínio.
+				if ( ! $produto_wamelink && function_exists( 'incavel_get_revenda_whatsapp_link_for_current_domain' ) ) {
+					$produto_wamelink = incavel_get_revenda_whatsapp_link_for_current_domain();
+				}
+
+				// 3) Fallback: WhatsApp global (opções do tema).
 				if ( ! $produto_wamelink && function_exists( 'get_field' ) ) {
-					// Fallback: WhatsApp global (opções do tema).
 					$global_whatsapp = get_field( 'whatsapp', 'option' );
 					if ( ! empty( $global_whatsapp ) ) {
 						$search           = array( ' ', '-', '(', ')' );
