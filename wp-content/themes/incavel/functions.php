@@ -463,6 +463,53 @@ if ( function_exists( 'register_nav_menus' ) ) {
 	);
 }
 
+/**
+ * Helpers para detecção de domínio público e domínio de filial.
+ *
+ * Essas funções consideram o cabeçalho HTTP_X_FORWARDED_HOST enviado
+ * pelos vhosts de proxy reverso, com fallback para HTTP_HOST e home_url().
+ */
+if ( ! function_exists( 'incavel_get_public_host' ) ) {
+	function incavel_get_public_host() {
+		// Prioriza o host real repassado pelo proxy reverso.
+		if ( ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) {
+			return sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_HOST'] ) );
+		}
+
+		// Fallback para o HTTP_HOST padrão.
+		if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
+			return sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
+		}
+
+		// Último fallback: host configurado no WordPress.
+		$home_url = home_url();
+		$parts    = wp_parse_url( $home_url );
+
+		return isset( $parts['host'] ) ? $parts['host'] : 'incavel.com.br';
+	}
+}
+
+if ( ! function_exists( 'incavel_is_filial_domain' ) ) {
+	function incavel_is_filial_domain() {
+		$host = incavel_get_public_host();
+
+		// Considera como domínio de filial tudo que não for o domínio principal.
+		return ! empty( $host ) && 'incavel.com.br' !== $host;
+	}
+}
+
+// Adiciona uma classe CSS global quando estiver em domínio de filial.
+add_filter(
+	'body_class',
+	function ( $classes ) {
+		if ( function_exists( 'incavel_is_filial_domain' ) && incavel_is_filial_domain() ) {
+			$classes[] = 'filial-domain';
+		}
+
+		return $classes;
+	}
+);
+
 // Custom Nav Walker: wp_bootstrap_navwalker().
 $custom_walker = __DIR__ . '/inc/wp-bootstrap-navwalker.php';
 if ( is_readable( $custom_walker ) ) {

@@ -150,7 +150,7 @@ the_post();
 							?>
 							<div class="home-produto">
 								<div class="home-produto-item" style="background-image: url('<?php echo esc_url($thumbnail_url); ?>');">
-									<a href="<?php echo get_permalink($produto->ID); ?>">
+									<a href="<?php echo esc_url( get_permalink( $produto->ID ) ); ?>">
 										<div class="home-produto-overlay">
 											<h3><?php echo get_the_title($produto->ID); ?></h3>
 										</div>
@@ -175,7 +175,7 @@ the_post();
 								?>
 								<div class="home-produto">
 									<div class="home-produto-item" style="background-image: url('<?php echo esc_url($thumbnail_url); ?>');">
-										<a href="<?php echo str_replace('incavel.com.br', $_SERVER['HTTP_X_FORWARDED_HOST'] ?? 'incavel.com.br', get_permalink($produto->ID)); ?>">
+										<a href="<?php echo esc_url( get_permalink() ); ?>">
 											<div class="home-produto-overlay">
 												<h3><?php the_title(); ?></h3>
 											</div>
