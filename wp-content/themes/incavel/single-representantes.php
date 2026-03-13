@@ -147,10 +147,14 @@ the_post();
 						// Loop pelos produtos do ACF
 						foreach ($produtos as $produto) :
 							$thumbnail_url = get_the_post_thumbnail_url($produto->ID, 'thumbnail');
+							$produto_link  = get_permalink( $produto->ID );
+							if ( function_exists( 'incavel_replace_domain_in_html' ) ) {
+								$produto_link = incavel_replace_domain_in_html( $produto_link );
+							}
 							?>
 							<div class="home-produto">
 								<div class="home-produto-item" style="background-image: url('<?php echo esc_url($thumbnail_url); ?>');">
-									<a href="<?php echo esc_url( get_permalink( $produto->ID ) ); ?>">
+									<a href="<?php echo esc_url( $produto_link ); ?>">
 										<div class="home-produto-overlay">
 											<h3><?php echo get_the_title($produto->ID); ?></h3>
 										</div>
@@ -172,10 +176,14 @@ the_post();
 						if ($query->have_posts()) :
 							while ($query->have_posts()) : $query->the_post();
 								$thumbnail_url = get_the_post_thumbnail_url(get_the_ID(), 'thumbnail');
+								$fallback_link = get_permalink();
+								if ( function_exists( 'incavel_replace_domain_in_html' ) ) {
+									$fallback_link = incavel_replace_domain_in_html( $fallback_link );
+								}
 								?>
 								<div class="home-produto">
 									<div class="home-produto-item" style="background-image: url('<?php echo esc_url($thumbnail_url); ?>');">
-										<a href="<?php echo esc_url( get_permalink() ); ?>">
+										<a href="<?php echo esc_url( $fallback_link ); ?>">
 											<div class="home-produto-overlay">
 												<h3><?php the_title(); ?></h3>
 											</div>
