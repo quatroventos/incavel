@@ -504,6 +504,58 @@ add_filter( 'widget_text', 'incavel_replace_domain_in_html', 20 );
 add_filter( 'widget_text_content', 'incavel_replace_domain_in_html', 20 );
 add_filter( 'wp_nav_menu', 'incavel_replace_domain_in_html', 20 );
 
+/**
+ * Retorna o link WhatsApp (wa.me) da revenda associada ao domínio atual,
+ * ou null se estiver no domínio principal (incavel.com.br) ou se não encontrar.
+ */
+function incavel_get_revenda_whatsapp_link_for_current_domain() {
+	if ( ! function_exists( 'get_field' ) ) {
+		return null;
+	}
+
+	$host = incavel_get_current_public_host();
+	$host = preg_replace( '/^www\./', '', $host );
+
+	// Domínio principal não usa WhatsApp de revenda.
+	if ( 'incavel.com.br' === $host ) {
+		return null;
+	}
+
+	// Mapeia cada domínio de filial para o slug do post de representantes.
+	$map = array(
+		'rondonibus.com.br'         => 'rondonibus',
+		'onipecas.com.br'           => 'onipecas',
+		'venbus.com.br'             => 'venbus',
+		'incavelfortaleza.com.br'   => 'incavel-fortaleza',
+		'nortebus.com.br'           => 'nortebus',
+		'transbuspecas.com.br'      => 'transbus',
+		'buspartspr.com.br'         => 'buspartspr',
+		'cuiabaautoonibus.com.br'   => 'cuiaba-auto-onibus',
+	);
+
+	if ( ! isset( $map[ $host ] ) ) {
+		return null;
+	}
+
+	$slug = $map[ $host ];
+
+	$representante = get_page_by_path( $slug, OBJECT, 'representantes' );
+	if ( ! $representante ) {
+		return null;
+	}
+
+	$contato = get_field( 'contato', $representante->ID );
+	if ( empty( $contato ) || empty( $contato['whatsapp'] ) ) {
+		return null;
+	}
+
+	$search   = array( ' ', '-', '(', ')' );
+	$number   = str_replace( $search, '', $contato['whatsapp'] );
+	$number   = ltrim( $number, '+' );
+
+	return 'https://wa.me/' . $number;
+}
+
 // Custom Nav Walker: wp_bootstrap_navwalker().
 $custom_walker = __DIR__ . '/inc/wp-bootstrap-navwalker.php';
 if ( is_readable( $custom_walker ) ) {
