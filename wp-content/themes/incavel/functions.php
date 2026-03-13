@@ -519,63 +519,6 @@ add_filter(
 	}
 );
 
-/**
- * Força WordPress a usar o domínio público (filial) nas URLs geradas
- * quando o acesso vem por um domínio de representante.
- */
-function incavel_filter_url_to_public_host( $url ) {
-	if ( ! function_exists( 'incavel_is_filial_domain' ) || ! incavel_is_filial_domain() ) {
-		return $url;
-	}
-
-	$host = incavel_get_public_host();
-	if ( empty( $host ) ) {
-		return $url;
-	}
-
-	$parts = wp_parse_url( $url );
-	if ( empty( $parts ) || empty( $parts['host'] ) ) {
-		return $url;
-	}
-
-	$parts['host'] = $host;
-
-	$scheme = isset( $parts['scheme'] ) ? $parts['scheme'] : ( is_ssl() ? 'https' : 'http' );
-	$path   = isset( $parts['path'] ) ? $parts['path'] : '';
-	$query  = isset( $parts['query'] ) ? '?' . $parts['query'] : '';
-	$frag   = isset( $parts['fragment'] ) ? '#' . $parts['fragment'] : '';
-
-	return $scheme . '://' . $parts['host'] . $path . $query . $frag;
-}
-
-add_filter( 'home_url', 'incavel_filter_url_to_public_host', 10, 1 );
-add_filter( 'site_url', 'incavel_filter_url_to_public_host', 10, 1 );
-add_filter( 'network_site_url', 'incavel_filter_url_to_public_host', 10, 1 );
-
-// Evita redirects canônicos para incavel.com.br quando em domínio de filial.
-add_filter(
-	'redirect_canonical',
-	function ( $redirect_url, $requested_url ) {
-		if ( ! function_exists( 'incavel_is_filial_domain' ) || ! incavel_is_filial_domain() ) {
-			return $redirect_url;
-		}
-
-		if ( empty( $redirect_url ) ) {
-			return $redirect_url;
-		}
-
-		$parts = wp_parse_url( $redirect_url );
-		if ( isset( $parts['host'] ) && 'incavel.com.br' === $parts['host'] ) {
-			// Mantém a URL atual em vez de redirecionar para o domínio principal.
-			return false;
-		}
-
-		return $redirect_url;
-	},
-	10,
-	2
-);
-
 // Custom Nav Walker: wp_bootstrap_navwalker().
 $custom_walker = __DIR__ . '/inc/wp-bootstrap-navwalker.php';
 if ( is_readable( $custom_walker ) ) {
