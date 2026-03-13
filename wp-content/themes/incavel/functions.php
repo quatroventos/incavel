@@ -473,12 +473,21 @@ if ( ! function_exists( 'incavel_get_public_host' ) ) {
 	function incavel_get_public_host() {
 		// Prioriza o host real repassado pelo proxy reverso.
 		if ( ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) {
-			return sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_HOST'] ) );
+			$host = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_HOST'] ) );
+			// X-Forwarded-Host pode ser lista (ex.: "incavel.com.br, onipecas.com.br"); usar só o primeiro.
+			if ( strpos( $host, ',' ) !== false ) {
+				$host = trim( preg_replace( '/\s*,.*/', '', $host ) );
+			}
+			return $host;
 		}
 
 		// Fallback para o HTTP_HOST padrão.
 		if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
-			return sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
+			$host = sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
+			if ( strpos( $host, ',' ) !== false ) {
+				$host = trim( preg_replace( '/\s*,.*/', '', $host ) );
+			}
+			return $host;
 		}
 
 		// Último fallback: host configurado no WordPress.
