@@ -45,12 +45,7 @@ if ( have_posts() ) {
 					$produto_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
 				}
 
-				// 2) Se não tiver cookie, tenta descobrir a revenda pelo domínio.
-				if ( ! $produto_wamelink && function_exists( 'incavel_get_revenda_whatsapp_link_for_current_domain' ) ) {
-					$produto_wamelink = incavel_get_revenda_whatsapp_link_for_current_domain();
-				}
-
-				// 3) Fallback: WhatsApp global (opções do tema).
+				// 2) Fallback: WhatsApp global (opções do tema).
 				if ( ! $produto_wamelink && function_exists( 'get_field' ) ) {
 					$global_whatsapp = get_field( 'whatsapp', 'option' );
 					if ( ! empty( $global_whatsapp ) ) {
