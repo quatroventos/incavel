@@ -1,0 +1,6 @@
+--2026-03-11 18:39:56--  https://connect.advancedcustomfields.com/v2/plugins/download?s=web
+Resolving connect.advancedcustomfields.com (connect.advancedcustomfields.com)... 2a06:98c1:3100::ac40:9141, 2606:4700:440d::6812:2abf, 172.64.145.65, ...
+Connecting to connect.advancedcustomfields.com (connect.advancedcustomfields.com)|2a06:98c1:3100::ac40:9141|:443... connected.
+HTTP request sent, awaiting response... 400 Bad Request
+2026-03-11 18:39:57 ERROR 400: Bad Request.
+

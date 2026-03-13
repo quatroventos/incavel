@@ -1,0 +1,20 @@
+/*!
+Theme Name: Incavel
+Theme URI: https://www.quatroventos.com.br
+Author: Quatro Ventos
+Author URI: https://www.quatroventos.com.br
+Description: Tema exclusivo para a Incavel
+Version: 3.5.0
+Requires at least: 5.0
+Tested up to: 6.3
+Requires PHP: 7.2
+License: GPL version 2 or later
+License URI: https://www.gnu.org/licenses/gpl-2.0
+Tags: custom-background, custom-colors, featured-images, flexible-header, microformats, post-formats, rtl-language-support, theme-options, translation-ready, accessibility-ready
+Text Domain: incavel
+*/
+
+/* Don't overwrite this file. Compile "/assets/main.scss" to "/assets/dist/main.css" */
+
+/* From http://codex.wordpress.org/CSS */
+
