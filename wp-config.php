@@ -93,6 +93,20 @@ define('FS_METHOD', 'direct');
 
 /* Adicione valores personalizados entre esta linha até "Isto é tudo". */
 
+// WP_HOME e WP_SITEURL dinâmicos por domínio (via Host / X-Forwarded-Host).
+if ( isset( $_SERVER['HTTP_X_FORWARDED_HOST'] ) && $_SERVER['HTTP_X_FORWARDED_HOST'] ) {
+    $host = explode( ',', $_SERVER['HTTP_X_FORWARDED_HOST'] )[0];
+    $host = trim( $host );
+} elseif ( isset( $_SERVER['HTTP_HOST'] ) && $_SERVER['HTTP_HOST'] ) {
+    $host = $_SERVER['HTTP_HOST'];
+} else {
+    $host = 'incavel.com.br';
+}
+
+$scheme = ( ! empty( $_SERVER['HTTPS'] ) && $_SERVER['HTTPS'] !== 'off' ) ? 'https' : 'http';
+define( 'WP_HOME',    $scheme . '://' . $host );
+define( 'WP_SITEURL', $scheme . '://' . $host );
+
 /** Caminho absoluto para o diretório WordPress. */
 if ( ! defined( 'ABSPATH' ) ) {
     define( 'ABSPATH', __DIR__ . '/' );
