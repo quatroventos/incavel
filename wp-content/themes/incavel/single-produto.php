@@ -39,9 +39,7 @@ if ( have_posts() ) {
 				$produto_wamelink = '';
 
 				// 1) Se houver cookie de revenda (setado na página de representantes) e não estivermos no domínio principal, usa ele.
-				$host = incavel_get_current_public_host();
-				$host = preg_replace( '/^www\./', '', $host );
-				if ( 'incavel.com.br' !== $host && ! empty( $_COOKIE['revenda_whatsapp'] ) ) {
+				if (! empty( $_COOKIE['revenda_whatsapp'] ) ) {
 					$produto_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
 				}
 
