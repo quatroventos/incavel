@@ -104,9 +104,8 @@
 <script>
 // Verifica a URL real no browser
 if (window.location.hostname !== 'incavel.com.br') {
-    document.getElementById('main-header').style.display = 'none';
 	document.getElementById('footer').style.display = 'none';
-	
+
 	document.body.classList.add('filial-domain');
 }
 </script>
