@@ -80,19 +80,19 @@ if ( ! session_id() ) {
 
 		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( isset( $navbar_position ) && 'fixed_top' === $navbar_position ) : echo ' fixed-top'; elseif ( isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) : echo ' fixed-bottom'; endif; if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
 			<div class="container">
-				<a class="navbar-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
+				<a class="navbar-brand" href="/" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
 					<?php
 					// Em domínios de filial, prioriza o logo do ACF do representante.
 					if ( $is_filial && ! empty( $filial_logo ) ) :
 						?>
-						<img src="<?php echo esc_url( $filial_logo ); ?>" height="100" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+						<img src="<?php echo esc_url( $filial_logo ); ?>" style="height:100px;max-height:100px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
 					<?php
 					else :
 						$header_logo = get_theme_mod( 'header_logo' ); // Get custom meta-value.
 
 						if ( ! empty( $header_logo ) ) :
 							?>
-							<img src="<?php echo esc_url( $header_logo ); ?>" height="100" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+							<img src="<?php echo esc_url( $header_logo ); ?>" style="height:100px;max-height:100px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
 							<?php
 						else :
 							echo esc_attr( get_bloginfo( 'name', 'display' ) );
@@ -135,19 +135,19 @@ if ( ! session_id() ) {
 
         <nav id="header" class="d-block d-md-none navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( isset( $navbar_position ) && 'fixed_top' === $navbar_position ) : echo ' fixed-top'; elseif ( isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) : echo ' fixed-bottom'; endif; if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
             <div class="container">
-                <a class="navbar-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
+                <a class="navbar-brand" href="/" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
 					<?php
 					// Mesma lógica de logo para mobile.
 					if ( $is_filial && ! empty( $filial_logo ) ) :
 						?>
-						<img src="<?php echo esc_url( $filial_logo ); ?>"  height="100" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+						<img src="<?php echo esc_url( $filial_logo ); ?>" style="height:100px;max-height:100px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
 					<?php
 					else :
 						$header_logo = get_theme_mod( 'header_logo' ); // Get custom meta-value.
 
 						if ( ! empty( $header_logo ) ) :
 							?>
-							<img src="<?php echo esc_url( $header_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+							<img src="<?php echo esc_url( $header_logo ); ?>" style="height:100px;max-height:100px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
 							<?php
 						else :
 							echo esc_attr( get_bloginfo( 'name', 'display' ) );
