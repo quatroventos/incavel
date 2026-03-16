@@ -468,12 +468,19 @@ if ( function_exists( 'register_nav_menus' ) ) {
  */
 function incavel_get_current_public_host() {
 	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) {
-		$host = explode( ',', $_SERVER['HTTP_X_FORWARDED_HOST'] )[0];
-		return trim( $host );
+		$host = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_HOST'] ) );
+		if ( strpos( $host, ',' ) !== false ) {
+			$host = trim( preg_replace( '/\s*,.*/', '', $host ) );
+		}
+		return $host;
 	}
 
 	if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
-		return $_SERVER['HTTP_HOST'];
+		$host = sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
+		if ( strpos( $host, ',' ) !== false ) {
+			$host = trim( preg_replace( '/\s*,.*/', '', $host ) );
+		}
+		return $host;
 	}
 
 	return 'incavel.com.br';
@@ -503,6 +510,62 @@ add_filter( 'the_content', 'incavel_replace_domain_in_html', 20 );
 add_filter( 'widget_text', 'incavel_replace_domain_in_html', 20 );
 add_filter( 'widget_text_content', 'incavel_replace_domain_in_html', 20 );
 add_filter( 'wp_nav_menu', 'incavel_replace_domain_in_html', 20 );
+
+/**
+ * Retorna o logo da filial com base no domínio atual.
+ * Usa o campo ACF 'logo' no CPT 'representantes'.
+ */
+function incavel_get_filial_logo_for_current_domain() {
+	if ( ! function_exists( 'get_field' ) ) {
+		return null;
+	}
+
+	static $cached = null;
+	if ( null !== $cached ) {
+		return $cached;
+	}
+
+	$host = incavel_get_current_public_host();
+	$host = preg_replace( '/^www\./', '', $host );
+
+	if ( 'incavel.com.br' === $host ) {
+		$cached = null;
+		return null;
+	}
+
+	$map = array(
+		'rondonibus.com.br'         => 'rondonibus',
+		'onipecas.com.br'           => 'onipecas',
+		'venbus.com.br'             => 'venbus',
+		'incavelfortaleza.com.br'   => 'incavel-fortaleza',
+		'nortebus.com.br'           => 'nortebus',
+		'transbuspecas.com.br'      => 'transbus',
+		'buspartspr.com.br'         => 'buspartspr',
+		'cuiabaautoonibus.com.br'   => 'cuiaba-auto-onibus',
+	);
+
+	if ( ! isset( $map[ $host ] ) ) {
+		$cached = null;
+		return null;
+	}
+
+	$slug          = $map[ $host ];
+	$representante = get_page_by_path( $slug, OBJECT, 'representantes' );
+
+	if ( ! $representante ) {
+		$cached = null;
+		return null;
+	}
+
+	$logo = get_field( 'logo', $representante->ID );
+	if ( empty( $logo ) ) {
+		$cached = null;
+		return null;
+	}
+
+	$cached = esc_url_raw( $logo );
+	return $cached;
+}
 
 /**
  * Força links permanentes (posts, páginas, CPTs) a serem relativos no frontend.

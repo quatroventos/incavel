@@ -49,20 +49,33 @@
 
 <div id="wrapper">
 	<header id="main-header">
+		<?php
+		$public_host    = function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : ( $_SERVER['HTTP_HOST'] ?? '' );
+		$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
+		$filial_logo    = function_exists( 'incavel_get_filial_logo_for_current_domain' ) ? incavel_get_filial_logo_for_current_domain() : null;
+		$is_filial      = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
+		?>
 
 		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( isset( $navbar_position ) && 'fixed_top' === $navbar_position ) : echo ' fixed-top'; elseif ( isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) : echo ' fixed-bottom'; endif; if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
 			<div class="container">
-				<a class="navbar-brand" href="<?php echo esc_url( home_url() ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
+				<a class="navbar-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
 					<?php
+					// Em domínios de filial, prioriza o logo do ACF do representante.
+					if ( $is_filial && ! empty( $filial_logo ) ) :
+						?>
+						<img src="<?php echo esc_url( $filial_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+					<?php
+					else :
 						$header_logo = get_theme_mod( 'header_logo' ); // Get custom meta-value.
 
 						if ( ! empty( $header_logo ) ) :
-					?>
-						<img src="<?php echo esc_url( $header_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
-					<?php
+							?>
+							<img src="<?php echo esc_url( $header_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+							<?php
 						else :
 							echo esc_attr( get_bloginfo( 'name', 'display' ) );
 						endif;
+					endif;
 					?>
 				</a>
 
@@ -97,18 +110,25 @@
 
         <nav id="header" class="d-block d-md-none navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( isset( $navbar_position ) && 'fixed_top' === $navbar_position ) : echo ' fixed-top'; elseif ( isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) : echo ' fixed-bottom'; endif; if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
             <div class="container">
-                <a class="navbar-brand" href="<?php echo esc_url( home_url() ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
-                    <?php
-                    $header_logo = get_theme_mod( 'header_logo' ); // Get custom meta-value.
+                <a class="navbar-brand" href="<?php echo esc_url( home_url( '/' ) ); ?>" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
+					<?php
+					// Mesma lógica de logo para mobile.
+					if ( $is_filial && ! empty( $filial_logo ) ) :
+						?>
+						<img src="<?php echo esc_url( $filial_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+					<?php
+					else :
+						$header_logo = get_theme_mod( 'header_logo' ); // Get custom meta-value.
 
-                    if ( ! empty( $header_logo ) ) :
-                        ?>
-                        <img src="<?php echo esc_url( $header_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
-                    <?php
-                    else :
-                        echo esc_attr( get_bloginfo( 'name', 'display' ) );
-                    endif;
-                    ?>
+						if ( ! empty( $header_logo ) ) :
+							?>
+							<img src="<?php echo esc_url( $header_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+							<?php
+						else :
+							echo esc_attr( get_bloginfo( 'name', 'display' ) );
+						endif;
+					endif;
+					?>
                 </a>
 
                 <a href="https://wa.me/+5541997261212" target="_blank" class="whatsapp-header" style="width:56px; height: 40px; padding:18px;">
