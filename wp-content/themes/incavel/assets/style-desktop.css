@@ -191,18 +191,12 @@ a img.aligncenter {
 #header{
     padding:44px;
 }
-.filial-domain #header{
-    padding:0 !important;
-}
 .main{
     margin-top:125px;
 }
 .hero{
     margin-top:125px;
     position:relative;
-}
-.filial-domain .hero-representantes{
-    margin-top:200px !important; /* compensa a área maior da logo no header */
 }
 .hero .item {
     width: 100%;
@@ -1782,4 +1776,13 @@ footer h4{
 .blog-hero .container{
 	position:absolute;
 	z-index:2;
+}
+
+@media screen and (min-width: 768px) {
+    .filial-domain #header{
+        padding:0 !important;
+    }
+    .filial-domain #header{
+        padding:0 !important;
+    }
 }

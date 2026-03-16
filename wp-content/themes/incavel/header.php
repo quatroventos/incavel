@@ -89,7 +89,7 @@ if ( ! session_id() ) {
 			if ( is_home() || is_front_page() ) {
 				echo ' home';
 			}
-		?>">
+		?>
 			<div class="container">
 				<a class="navbar-brand" href="/" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
 					<?php
@@ -103,7 +103,7 @@ if ( ! session_id() ) {
 
 						if ( ! empty( $header_logo ) ) :
 							?>
-							<img src="<?php echo esc_url( $header_logo ); ?>" style="height:100px;max-height:100px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+							<img src="<?php echo esc_url( $header_logo ); ?>" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
 							<?php
 						else :
 							echo esc_attr( get_bloginfo( 'name', 'display' ) );
