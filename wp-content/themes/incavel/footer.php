@@ -105,18 +105,11 @@
 // Verifica a URL real no browser
 if (window.location.hostname !== 'incavel.com.br') {
 	document.getElementById('footer').style.display = 'none';
-
 	document.body.classList.add('filial-domain');
 }
 </script>
 <style>
 /* CSS que só aplica quando está em domínio de filial */
-.filial-domain .mt-0-custom {
-    margin-top: 0 !important;
-}
-.filial-domain #main{
-	margin-top: 0 !important;
-}
 .display-whatsapp-filial-domain{
 	display: none !important;
 }
