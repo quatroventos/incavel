@@ -61,11 +61,11 @@ if ( ! session_id() ) {
 		$filial_logo = $is_filial ? $_SESSION['filial_logo'] : '';
 
 		// Define o WhatsApp do header:
-		// 1) tenta WhatsApp da filial (helper PHP),
+		// 1) tenta WhatsApp da filial salvo na sessão (setado em single-representantes),
 		// 2) se vazio, usa WhatsApp global das opções do tema.
 		$header_wamelink = '';
-		if ( function_exists( 'incavel_get_revenda_whatsapp_link_for_current_domain' ) ) {
-			$header_wamelink = incavel_get_revenda_whatsapp_link_for_current_domain();
+		if ( ! empty( $_SESSION['filial_whatsapp'] ) ) {
+			$header_wamelink = $_SESSION['filial_whatsapp'];
 		}
 		if ( ! $header_wamelink && function_exists( 'get_field' ) ) {
 			$global_whatsapp = get_field( 'whatsapp', 'option' );

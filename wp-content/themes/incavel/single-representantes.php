@@ -13,12 +13,17 @@ $logo_url = get_field('logo');
 
 $wamelink = 'https://wa.me/'.str_replace($search, '', $contato['whatsapp']);
 
-// Salva o logo da filial na sessão assim que o usuário entra na home da filial.
-if ( ! empty( $logo_url ) ) {
+// Salva dados da filial na sessão assim que o usuário entra na home da filial.
+if ( ( ! empty( $logo_url ) || ! empty( $wamelink ) ) ) {
 	if ( ! session_id() ) {
 		session_start();
 	}
-	$_SESSION['filial_logo'] = esc_url_raw( $logo_url );
+	if ( ! empty( $logo_url ) ) {
+		$_SESSION['filial_logo'] = esc_url_raw( $logo_url );
+	}
+	if ( ! empty( $wamelink ) ) {
+		$_SESSION['filial_whatsapp'] = esc_url_raw( $wamelink );
+	}
 }
 
     // Grava o WhatsApp desta revenda em um cookie, para ser reutilizado em páginas de produto
