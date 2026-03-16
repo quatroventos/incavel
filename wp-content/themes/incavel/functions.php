@@ -464,16 +464,6 @@ if ( function_exists( 'register_nav_menus' ) ) {
 }
 
 /**
- * Inicia a sessão PHP cedo para poder armazenar dados de filial (logo, etc.).
- */
-function incavel_start_session() {
-	if ( ! session_id() ) {
-		session_start();
-	}
-}
-add_action( 'init', 'incavel_start_session', 1 );
-
-/**
  * Helper: devolve o host público atual (HTTP_X_FORWARDED_HOST ou HTTP_HOST).
  */
 function incavel_get_current_public_host() {

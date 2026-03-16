@@ -1,3 +1,9 @@
+<?php
+// Garante que a sessão esteja iniciada antes de qualquer saída HTML.
+if ( ! session_id() ) {
+	session_start();
+}
+?>
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -55,44 +61,21 @@
 		$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
 		$is_filial          = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
 
-		// Monta e guarda os dados da filial na sessão (logo etc.) com base no domínio.
+		// LOGO DA FILIAL: segue a mesma filosofia da correção do WhatsApp:
+		// 1) tenta sessão primeiro, 2) se vazio, calcula e salva na sessão.
+		$filial_logo = '';
 		if ( $is_filial ) {
-			if ( ! isset( $_SESSION['filial_data'] ) || ! is_array( $_SESSION['filial_data'] ) || $_SESSION['filial_data']['host'] !== $public_host_no_www ) {
-				$filial_logo_url = '';
+			if ( ! empty( $_SESSION['filial_logo'] ) ) {
+				$filial_logo = $_SESSION['filial_logo'];
+			}
 
-				if ( function_exists( 'get_field' ) ) {
-					// Mapa domínio -> slug do representante.
-					$map = array(
-						'rondonibus.com.br'         => 'rondonibus',
-						'onipecas.com.br'           => 'onipecas',
-						'venbus.com.br'             => 'venbus',
-						'incavelfortaleza.com.br'   => 'incavel-fortaleza',
-						'nortebus.com.br'           => 'nortebus',
-						'transbuspecas.com.br'      => 'transbus',
-						'buspartspr.com.br'         => 'buspartspr',
-						'cuiabaautoonibus.com.br'   => 'cuiaba-auto-onibus',
-					);
-
-					if ( isset( $map[ $public_host_no_www ] ) ) {
-						$slug          = $map[ $public_host_no_www ];
-						$representante = get_page_by_path( $slug, OBJECT, 'representantes' );
-						if ( $representante ) {
-							$logo = get_field( 'logo', $representante->ID );
-							if ( ! empty( $logo ) ) {
-								$filial_logo_url = esc_url_raw( $logo );
-							}
-						}
-					}
+			if ( ! $filial_logo && function_exists( 'incavel_get_filial_logo_for_current_domain' ) ) {
+				$filial_logo = incavel_get_filial_logo_for_current_domain();
+				if ( $filial_logo ) {
+					$_SESSION['filial_logo'] = $filial_logo;
 				}
-
-				$_SESSION['filial_data'] = array(
-					'host' => $public_host_no_www,
-					'logo' => $filial_logo_url,
-				);
 			}
 		}
-
-		$filial_logo = ( $is_filial && ! empty( $_SESSION['filial_data']['logo'] ) ) ? $_SESSION['filial_data']['logo'] : '';
 		?>
 
 		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( isset( $navbar_position ) && 'fixed_top' === $navbar_position ) : echo ' fixed-top'; elseif ( isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) : echo ' fixed-bottom'; endif; if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
