@@ -56,26 +56,9 @@ if ( ! session_id() ) {
 <div id="wrapper">
 	<header id="main-header">
 		<?php
-		// Detecta domínio atual.
-		$public_host        = function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : ( $_SERVER['HTTP_HOST'] ?? '' );
-		$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
-		$is_filial          = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
-
-		// LOGO DA FILIAL: segue a mesma filosofia da correção do WhatsApp:
-		// 1) tenta sessão primeiro, 2) se vazio, calcula e salva na sessão.
-		$filial_logo = '';
-		if ( $is_filial ) {
-			if ( ! empty( $_SESSION['filial_logo'] ) ) {
-				$filial_logo = $_SESSION['filial_logo'];
-			}
-
-			if ( ! $filial_logo && function_exists( 'incavel_get_filial_logo_for_current_domain' ) ) {
-				$filial_logo = incavel_get_filial_logo_for_current_domain();
-				if ( $filial_logo ) {
-					$_SESSION['filial_logo'] = $filial_logo;
-				}
-			}
-		}
+		// Se existir logo na sessão, estamos em contexto de filial.
+		$is_filial   = ! empty( $_SESSION['filial_logo'] );
+		$filial_logo = $is_filial ? $_SESSION['filial_logo'] : '';
 		?>
 
 		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( isset( $navbar_position ) && 'fixed_top' === $navbar_position ) : echo ' fixed-top'; elseif ( isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) : echo ' fixed-bottom'; endif; if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
