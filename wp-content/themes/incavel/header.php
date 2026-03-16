@@ -85,7 +85,7 @@ if ( ! session_id() ) {
 					// Em domínios de filial, prioriza o logo do ACF do representante.
 					if ( $is_filial && ! empty( $filial_logo ) ) :
 						?>
-						<img src="<?php echo esc_url( $filial_logo ); ?>" style="height:100px;max-height:100px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+						<img src="<?php echo esc_url( $filial_logo ); ?>" style="height:200px;max-height:200px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
 					<?php
 					else :
 						$header_logo = get_theme_mod( 'header_logo' ); // Get custom meta-value.
@@ -140,7 +140,7 @@ if ( ! session_id() ) {
 					// Mesma lógica de logo para mobile.
 					if ( $is_filial && ! empty( $filial_logo ) ) :
 						?>
-						<img src="<?php echo esc_url( $filial_logo ); ?>" style="height:100px;max-height:100px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
+						<img src="<?php echo esc_url( $filial_logo ); ?>" style="height:200px;max-height:200px;width:auto;" alt="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" />
 					<?php
 					else :
 						$header_logo = get_theme_mod( 'header_logo' ); // Get custom meta-value.
