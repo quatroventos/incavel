@@ -61,11 +61,11 @@ if ( ! session_id() ) {
 		$filial_logo = $is_filial ? $_SESSION['filial_logo'] : '';
 
 		// Define o WhatsApp do header:
-		// 1) tenta WhatsApp da filial salvo na sessão (setado em single-representantes),
+		// 1) tenta WhatsApp da filial salvo no cookie revenda_whatsapp (mesma "sessão" usada no resto do site),
 		// 2) se vazio, usa WhatsApp global das opções do tema.
 		$header_wamelink = '';
-		if ( ! empty( $_SESSION['filial_whatsapp'] ) ) {
-			$header_wamelink = $_SESSION['filial_whatsapp'];
+		if ( ! empty( $_COOKIE['revenda_whatsapp'] ) ) {
+			$header_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
 		}
 		if ( ! $header_wamelink && function_exists( 'get_field' ) ) {
 			$global_whatsapp = get_field( 'whatsapp', 'option' );
