@@ -79,17 +79,10 @@ if ( ! session_id() ) {
 		?>
 
 		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php
-			echo esc_attr( $navbar_scheme );
-			// Em filiais não usa fixed-top/fixed-bottom para evitar cortar o hero.
-			if ( ! $is_filial && isset( $navbar_position ) && 'fixed_top' === $navbar_position ) {
-				echo ' fixed-top';
-			} elseif ( ! $is_filial && isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) {
-				echo ' fixed-bottom';
-			}
 			if ( is_home() || is_front_page() ) {
 				echo ' home';
 			}
-		?>
+		?>">
 			<div class="container">
 				<a class="navbar-brand" href="/" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
 					<?php
