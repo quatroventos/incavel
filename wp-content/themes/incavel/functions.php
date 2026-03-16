@@ -504,6 +504,22 @@ add_filter( 'widget_text', 'incavel_replace_domain_in_html', 20 );
 add_filter( 'widget_text_content', 'incavel_replace_domain_in_html', 20 );
 add_filter( 'wp_nav_menu', 'incavel_replace_domain_in_html', 20 );
 
+/**
+ * Força links permanentes (posts, páginas, CPTs) a serem relativos no frontend.
+ * Assim qualquer domínio mascarado (rondonibus, onipecas, etc.) mantém o host atual.
+ */
+function incavel_make_link_relative_frontend( $link ) {
+	if ( is_admin() || empty( $link ) ) {
+		return $link;
+	}
+
+	return wp_make_link_relative( $link );
+}
+
+add_filter( 'post_type_link', 'incavel_make_link_relative_frontend', 10, 1 );
+add_filter( 'post_link', 'incavel_make_link_relative_frontend', 10, 1 );
+add_filter( 'page_link', 'incavel_make_link_relative_frontend', 10, 1 );
+
 // Custom Nav Walker: wp_bootstrap_navwalker().
 $custom_walker = __DIR__ . '/inc/wp-bootstrap-navwalker.php';
 if ( is_readable( $custom_walker ) ) {

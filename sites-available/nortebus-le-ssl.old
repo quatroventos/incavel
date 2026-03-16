@@ -1,0 +1,45 @@
+<IfModule mod_ssl.c>
+<VirtualHost *:443>
+    ServerName  nortebus.com.br
+    ServerAlias www.nortebus.com.br
+
+    ProxyPreserveHost Off
+    RequestHeader unset Host
+    RequestHeader set   Host "incavel.com.br"
+    RequestHeader set   X-Forwarded-Host "%{HTTP_HOST}s"
+    RequestHeader set   X-Forwarded-Proto "http"
+    RequestHeader set   X-Forwarded-For "%{REMOTE_ADDR}s"
+
+    RewriteEngine On
+# Some rewrite rules in this file were disabled on your HTTPS site,
+# because they have the potential to create redirection loops.
+
+#     RewriteCond %{REQUEST_URI} ^/$
+#     RewriteRule ^/?$ https://incavel.com.br/representantes/nortebus/ [P,L]
+
+    ProxyPassMatch ^/(.*)$ https://incavel.com.br/$1
+    ProxyPassReverse / https://incavel.com.br/
+
+    Header edit Location "^https?://incavel\.com\.br(/.*)$" "$1"
+    ProxyPassReverseCookieDomain incavel.com.br nortebus.com.br
+    Header edit Set-Cookie "(?i)Domain=incavel\.com\.br" "Domain=nortebus.com.br"
+
+Include /etc/letsencrypt/options-ssl-apache.conf
+    SSLProxyEngine On
+SSLCertificateFile /etc/letsencrypt/live/nortebus.com.br/fullchain.pem
+SSLCertificateKeyFile /etc/letsencrypt/live/nortebus.com.br/privkey.pem
+    SSLProxyEngine On
+    ProxyPreserveHost Off
+    RequestHeader unset Host
+    RequestHeader set   Host "incavel.com.br"
+    RequestHeader set   X-Forwarded-Host "%{HTTP_HOST}s"
+    RequestHeader set   X-Forwarded-Proto "https"
+    RequestHeader set   X-Forwarded-For "%{REMOTE_ADDR}s"
+
+    ProxyPass        /  https://incavel.com.br/representantes/nortebus/  connectiontimeout=5 timeout=30 keepalive=On
+    ProxyPassReverse /  https://incavel.com.br/representantes/nortebus/
+
+    ProxyPassReverseCookieDomain incavel.com.br nortebus.com.br
+    Header edit Location "^https?://incavel\.com\.br(/.*)$" "$1"
+</VirtualHost>
+</IfModule>

@@ -107,7 +107,7 @@ if ( have_posts() ) {
                         ?>
                         <div class="home-produto">
                             <div class="home-produto-item" style="background-image: url('<?php echo esc_url($thumbnail_url); ?>');">
-                                <a href="<?php the_permalink(); ?>">
+                                <a href="<?php echo esc_url( wp_make_link_relative( get_permalink() ) ); ?>">
                                 <div class="home-produto-overlay">
                                     <h3><?php the_title(); ?></h3>
                                 </div>
