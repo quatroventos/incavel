@@ -7,7 +7,8 @@ the_post();
 
     $localizacoes = wp_get_object_terms( get_the_ID() , 'localizacao' );
 
-    $contato = get_field('contato');
+    $contato  = get_field('contato');
+    $logo_url = get_field('logo');
     $search = array(' ','-', '(', ')');
 
     $wamelink = 'https://wa.me/'.str_replace($search, '', $contato['whatsapp']);
@@ -43,7 +44,7 @@ the_post();
             <div class="container">
                 <div class="row">
                     <div class="col-md-2 col-sm-12">
-                        <img src="<?php the_field('logo'); ?>" alt="<?php the_title(); ?>" class="filial-logo">
+                        <img src="<?php echo esc_url( $logo_url ); ?>" alt="<?php the_title(); ?>" class="filial-logo">
                     </div>
                     <div class="col-md-10 col-sm-12">
                         <h1 class="hero-title"><?php the_title(); ?></h1>

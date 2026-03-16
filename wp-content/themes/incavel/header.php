@@ -50,10 +50,49 @@
 <div id="wrapper">
 	<header id="main-header">
 		<?php
-		$public_host    = function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : ( $_SERVER['HTTP_HOST'] ?? '' );
+		// Detecta domínio atual.
+		$public_host        = function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : ( $_SERVER['HTTP_HOST'] ?? '' );
 		$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
-		$filial_logo    = function_exists( 'incavel_get_filial_logo_for_current_domain' ) ? incavel_get_filial_logo_for_current_domain() : null;
-		$is_filial      = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
+		$is_filial          = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
+
+		// Monta e guarda os dados da filial na sessão (logo etc.) com base no domínio.
+		if ( $is_filial ) {
+			if ( ! isset( $_SESSION['filial_data'] ) || ! is_array( $_SESSION['filial_data'] ) || $_SESSION['filial_data']['host'] !== $public_host_no_www ) {
+				$filial_logo_url = '';
+
+				if ( function_exists( 'get_field' ) ) {
+					// Mapa domínio -> slug do representante.
+					$map = array(
+						'rondonibus.com.br'         => 'rondonibus',
+						'onipecas.com.br'           => 'onipecas',
+						'venbus.com.br'             => 'venbus',
+						'incavelfortaleza.com.br'   => 'incavel-fortaleza',
+						'nortebus.com.br'           => 'nortebus',
+						'transbuspecas.com.br'      => 'transbus',
+						'buspartspr.com.br'         => 'buspartspr',
+						'cuiabaautoonibus.com.br'   => 'cuiaba-auto-onibus',
+					);
+
+					if ( isset( $map[ $public_host_no_www ] ) ) {
+						$slug          = $map[ $public_host_no_www ];
+						$representante = get_page_by_path( $slug, OBJECT, 'representantes' );
+						if ( $representante ) {
+							$logo = get_field( 'logo', $representante->ID );
+							if ( ! empty( $logo ) ) {
+								$filial_logo_url = esc_url_raw( $logo );
+							}
+						}
+					}
+				}
+
+				$_SESSION['filial_data'] = array(
+					'host' => $public_host_no_www,
+					'logo' => $filial_logo_url,
+				);
+			}
+		}
+
+		$filial_logo = ( $is_filial && ! empty( $_SESSION['filial_data']['logo'] ) ) ? $_SESSION['filial_data']['logo'] : '';
 		?>
 
 		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( isset( $navbar_position ) && 'fixed_top' === $navbar_position ) : echo ' fixed-top'; elseif ( isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) : echo ' fixed-bottom'; endif; if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
