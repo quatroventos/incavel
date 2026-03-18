@@ -56,23 +56,39 @@ if ( ! session_id() ) {
 <div id="wrapper">
 	<header id="main-header">
 		<?php
-		// Se existir logo na sessão, estamos em contexto de filial.
-		$is_filial   = ! empty( $_SESSION['filial_logo'] );
-		$filial_logo = $is_filial ? $_SESSION['filial_logo'] : '';
+		// Detecta domínio atual e se é filial (qualquer domínio diferente de incavel.com.br).
+		$public_host        = function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : ( $_SERVER['HTTP_HOST'] ?? '' );
+		$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
+		$is_filial          = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
+
+		// Logo da filial:
+		// 1) tenta buscar pelo domínio (helper PHP),
+		// 2) se vazio, tenta sessão (caso já tenha sido setada em single-representantes).
+		$filial_logo = '';
+		if ( function_exists( 'incavel_get_filial_logo_for_current_domain' ) ) {
+			$filial_logo = incavel_get_filial_logo_for_current_domain();
+		}
+		if ( ! $filial_logo && ! empty( $_SESSION['filial_logo'] ) ) {
+			$filial_logo = $_SESSION['filial_logo'];
+		}
 
 		// Define o WhatsApp do header:
 		// 1) tenta WhatsApp da filial salvo no cookie revenda_whatsapp (mesma "sessão" usada no resto do site),
-		// 2) se vazio, usa WhatsApp global das opções do tema.
+		// 2) se ainda vazio, tenta helper PHP por domínio,
+		// 3) se vazio, usa WhatsApp global das opções do tema.
 		$header_wamelink = '';
 		if ( ! empty( $_COOKIE['revenda_whatsapp'] ) ) {
 			$header_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
 		}
+		if ( ! $header_wamelink && function_exists( 'incavel_get_revenda_whatsapp_link_for_current_domain' ) ) {
+			$header_wamelink = incavel_get_revenda_whatsapp_link_for_current_domain();
+		}
 		if ( ! $header_wamelink && function_exists( 'get_field' ) ) {
 			$global_whatsapp = get_field( 'whatsapp', 'option' );
 			if ( ! empty( $global_whatsapp ) ) {
-				$search         = array( ' ', '-', '(', ')' );
-				$number         = str_replace( $search, '', $global_whatsapp );
-				$number         = ltrim( $number, '+' );
+				$search          = array( ' ', '-', '(', ')' );
+				$number          = str_replace( $search, '', $global_whatsapp );
+				$number          = ltrim( $number, '+' );
 				$header_wamelink = 'https://wa.me/' . $number;
 			}
 		}
