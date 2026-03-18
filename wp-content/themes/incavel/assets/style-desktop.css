@@ -191,6 +191,9 @@ a img.aligncenter {
 #header{
     padding:44px;
 }
+body:not(.filial-domain) #header.home{
+    margin-bottom:-130px !important;
+}
 .main{
     margin-top:125px;
 }
