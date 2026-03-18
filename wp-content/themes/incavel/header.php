@@ -56,26 +56,32 @@ if ( ! session_id() ) {
 <div id="wrapper">
 	<header id="main-header">
 		<?php
-		// Detecta domínio atual e se é filial (qualquer domínio diferente de incavel.com.br).
+		/*
+		 * Detecta contexto de filial e resolve logo/WhatsApp SEM depender só de sessão,
+		 * para funcionar já no primeiro acesso.
+		 */
+
+		// 1) Detecta domínio atual e se é filial (qualquer domínio diferente de incavel.com.br).
 		$public_host        = function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : ( $_SERVER['HTTP_HOST'] ?? '' );
 		$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
 		$is_filial          = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
 
-		// Logo da filial:
-		// 1) tenta buscar pelo domínio (helper PHP),
-		// 2) se vazio, tenta sessão (caso já tenha sido setada em single-representantes).
+		// 2) Logo da filial:
+		//    - primeiro tenta pelo domínio (helper PHP),
+		//    - se vazio, tenta sessão (setada em single-representantes),
+		//    - se ainda vazio, cai na logo padrão do tema no HTML abaixo.
 		$filial_logo = '';
-		if ( function_exists( 'incavel_get_filial_logo_for_current_domain' ) ) {
+		if ( $is_filial && function_exists( 'incavel_get_filial_logo_for_current_domain' ) ) {
 			$filial_logo = incavel_get_filial_logo_for_current_domain();
 		}
-		if ( ! $filial_logo && ! empty( $_SESSION['filial_logo'] ) ) {
+		if ( $is_filial && ! $filial_logo && ! empty( $_SESSION['filial_logo'] ) ) {
 			$filial_logo = $_SESSION['filial_logo'];
 		}
 
-		// Define o WhatsApp do header:
-		// 1) tenta WhatsApp da filial salvo no cookie revenda_whatsapp (mesma "sessão" usada no resto do site),
-		// 2) se ainda vazio, tenta helper PHP por domínio,
-		// 3) se vazio, usa WhatsApp global das opções do tema.
+		// 3) WhatsApp do header:
+		//    - cookie revenda_whatsapp (mesma "sessão" já usada em single-produto),
+		//    - se vazio, helper PHP por domínio,
+		//    - se vazio, WhatsApp global das opções do tema.
 		$header_wamelink = '';
 		if ( ! empty( $_COOKIE['revenda_whatsapp'] ) ) {
 			$header_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
@@ -94,11 +100,7 @@ if ( ! session_id() ) {
 		}
 		?>
 
-		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php
-			if ( is_home() || is_front_page() ) {
-				echo ' home';
-			}
-		?>">
+		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
 			<div class="container">
 				<a class="navbar-brand" href="/" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
 					<?php
@@ -153,18 +155,7 @@ if ( ! session_id() ) {
 
 <!--        mobile nav -->
 
-        <nav id="header" class="d-block d-md-none navbar navbar-expand-md <?php
-			echo esc_attr( $navbar_scheme );
-			// Em filiais não usa fixed-top/fixed-bottom para evitar cortar o hero.
-			if ( ! $is_filial && isset( $navbar_position ) && 'fixed_top' === $navbar_position ) {
-				echo ' fixed-top';
-			} elseif ( ! $is_filial && isset( $navbar_position ) && 'fixed_bottom' === $navbar_position ) {
-				echo ' fixed-bottom';
-			}
-			if ( is_home() || is_front_page() ) {
-				echo ' home';
-			}
-		?>">
+        <nav id="header" class="d-block d-md-none navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
             <div class="container">
                 <a class="navbar-brand" href="/" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
 					<?php
