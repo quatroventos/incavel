@@ -576,6 +576,8 @@ function incavel_get_filial_logo_for_current_domain() {
 		'buspartspr.com.br'         => 'buspartspr',
 		'cuiabaautoonibus.com.br'   => 'cuiaba-auto-onibus',
 		'autoonibuscascavel.com.br' => 'cascavel',
+		'fortebus.com.br'           => 'fortebus',
+		'multibuspr.com.br'         => 'multibus',
 	);
 
 	$map_has_key  = isset( $map[ $host ] );
@@ -624,6 +626,59 @@ function incavel_get_filial_logo_for_current_domain() {
 	// #endregion
 
 	return $cached;
+}
+
+/**
+ * Retorna o link de WhatsApp da filial com base no domínio atual.
+ * Usa o campo ACF 'contato' (subcampo 'whatsapp') no CPT 'representantes'.
+ */
+function incavel_get_revenda_whatsapp_link_for_current_domain() {
+	if ( ! function_exists( 'get_field' ) ) {
+		return null;
+	}
+
+	$host = incavel_get_current_public_host();
+	$host = preg_replace( '/^www\./', '', $host );
+
+	if ( 'incavel.com.br' === $host ) {
+		return null;
+	}
+
+	$map = array(
+		'rondonibus.com.br'         => 'rondonibus',
+		'onipecas.com.br'           => 'onipecas',
+		'venbus.com.br'             => 'venbus',
+		'incavelfortaleza.com.br'   => 'incavel-fortaleza',
+		'nortebus.com.br'           => 'nortebus',
+		'transbuspecas.com.br'      => 'transbus',
+		'buspartspr.com.br'         => 'buspartspr',
+		'cuiabaautoonibus.com.br'   => 'cuiaba-auto-onibus',
+		'autoonibuscascavel.com.br' => 'cascavel',
+		'fortebus.com.br'           => 'fortebus',
+		'multibuspr.com.br'         => 'multibus',
+	);
+
+	if ( ! isset( $map[ $host ] ) ) {
+		return null;
+	}
+
+	$slug          = $map[ $host ];
+	$representante = get_page_by_path( $slug, OBJECT, 'representantes' );
+
+	if ( ! $representante ) {
+		return null;
+	}
+
+	$contato = get_field( 'contato', $representante->ID );
+	if ( empty( $contato ) || empty( $contato['whatsapp'] ) ) {
+		return null;
+	}
+
+	$search = array( ' ', '-', '(', ')' );
+	$number = str_replace( $search, '', $contato['whatsapp'] );
+	$number = ltrim( $number, '+' );
+
+	return 'https://wa.me/' . $number;
 }
 
 /**
