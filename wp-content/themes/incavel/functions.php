@@ -541,8 +541,28 @@ function incavel_get_filial_logo_for_current_domain() {
 	$host = incavel_get_current_public_host();
 	$host = preg_replace( '/^www\./', '', $host );
 
+	// #region agent log
+	$logPath = '/Users/gabriel/VisualStudioProjects/incavel/incavel/.cursor/debug-c605db.log';
+	// #endregion
+
 	if ( 'incavel.com.br' === $host ) {
 		$cached = null;
+		// #region agent log
+		try {
+			$payload = array(
+				'sessionId'   => 'c605db',
+				'runId'        => 'pre',
+				'hypothesisId' => 'H_logo_helper',
+				'location'    => 'incavel_get_filial_logo_for_current_domain',
+				'message'     => 'Host is principal; no filial logo',
+				'timestamp'   => (int) round( microtime(true) * 1000 ),
+				'data'        => array(
+					'host' => $host,
+				),
+			);
+			file_put_contents( $logPath, wp_json_encode( $payload ) . "\n", FILE_APPEND );
+		} catch ( Exception $e ) {}
+		// #endregion
 		return null;
 	}
 
@@ -558,26 +578,51 @@ function incavel_get_filial_logo_for_current_domain() {
 		'autoonibuscascavel.com.br' => 'cascavel',
 	);
 
-	if ( ! isset( $map[ $host ] ) ) {
-		$cached = null;
-		return null;
+	$map_has_key  = isset( $map[ $host ] );
+	$slug          = $map_has_key ? $map[ $host ] : null;
+
+	$representante = null;
+	$representante_id = null;
+	$logo = null;
+
+	if ( $map_has_key ) {
+		$representante = get_page_by_path( $slug, OBJECT, 'representantes' );
+		$representante_id = $representante ? (int) $representante->ID : null;
+		if ( $representante ) {
+			$logo = get_field( 'logo', $representante->ID );
+		}
 	}
 
-	$slug          = $map[ $host ];
-	$representante = get_page_by_path( $slug, OBJECT, 'representantes' );
-
-	if ( ! $representante ) {
-		$cached = null;
-		return null;
+	$result = null;
+	if ( ! empty( $logo ) ) {
+		$result = esc_url_raw( $logo );
 	}
 
-	$logo = get_field( 'logo', $representante->ID );
-	if ( empty( $logo ) ) {
-		$cached = null;
-		return null;
-	}
+	$cached = $result;
 
-	$cached = esc_url_raw( $logo );
+	// #region agent log
+	try {
+		$payload = array(
+			'sessionId'   => 'c605db',
+			'runId'        => 'pre',
+			'hypothesisId' => 'H_logo_helper',
+			'location'    => 'incavel_get_filial_logo_for_current_domain',
+			'message'     => 'Resolved filial logo helper',
+			'timestamp'   => (int) round( microtime(true) * 1000 ),
+			'data'        => array(
+				'host' => $host,
+				'map_has_key' => ( $map_has_key ? 1 : 0 ),
+				'slug' => $slug,
+				'representante_found' => ( $representante_id ? 1 : 0 ),
+				'representante_id' => $representante_id,
+				'logo_empty' => empty( $logo ) ? 1 : 0,
+				'result_empty' => empty( $result ) ? 1 : 0,
+			),
+		);
+		file_put_contents( $logPath, wp_json_encode( $payload ) . "\n", FILE_APPEND );
+	} catch ( Exception $e ) {}
+	// #endregion
+
 	return $cached;
 }
 

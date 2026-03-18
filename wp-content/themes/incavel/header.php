@@ -76,12 +76,17 @@ if ( ! session_id() ) {
 		//    - primeiro tenta pelo domínio (helper PHP),
 		//    - se vazio, tenta sessão (setada em single-representantes),
 		//    - se ainda vazio, cai na logo padrão do tema no HTML abaixo.
-		$filial_logo = '';
+		$filial_logo       = '';
+		$filial_logo_source = 'none';
 		if ( $is_filial && function_exists( 'incavel_get_filial_logo_for_current_domain' ) ) {
 			$filial_logo = incavel_get_filial_logo_for_current_domain();
+			if ( ! empty( $filial_logo ) ) {
+				$filial_logo_source = 'helper';
+			}
 		}
 		if ( $is_filial && ! $filial_logo && ! empty( $_SESSION['filial_logo'] ) ) {
 			$filial_logo = $_SESSION['filial_logo'];
+			$filial_logo_source = 'session';
 		}
 
 		// 3) WhatsApp do header:
@@ -89,11 +94,16 @@ if ( ! session_id() ) {
 		//    - se vazio, helper PHP por domínio,
 		//    - se vazio, WhatsApp global das opções do tema.
 		$header_wamelink = '';
+		$header_wamelink_source = 'none';
 		if ( ! empty( $_COOKIE['revenda_whatsapp'] ) ) {
 			$header_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
+			$header_wamelink_source = 'cookie';
 		}
 		if ( ! $header_wamelink && function_exists( 'incavel_get_revenda_whatsapp_link_for_current_domain' ) ) {
 			$header_wamelink = incavel_get_revenda_whatsapp_link_for_current_domain();
+			if ( ! empty( $header_wamelink ) ) {
+				$header_wamelink_source = 'helper';
+			}
 		}
 		if ( ! $header_wamelink && function_exists( 'get_field' ) ) {
 			$global_whatsapp = get_field( 'whatsapp', 'option' );
@@ -102,8 +112,33 @@ if ( ! session_id() ) {
 				$number          = str_replace( $search, '', $global_whatsapp );
 				$number          = ltrim( $number, '+' );
 				$header_wamelink = 'https://wa.me/' . $number;
+				$header_wamelink_source = 'global';
 			}
 		}
+
+		// #region agent log
+		try {
+			$logPath = '/Users/gabriel/VisualStudioProjects/incavel/incavel/.cursor/debug-c605db.log';
+			$payload = array(
+				'sessionId'   => 'c605db',
+				'runId'        => 'pre',
+				'hypothesisId' => 'H_header_source',
+				'location'    => 'header.php:filial+whatsapp_source',
+				'message'     => 'Resolved header filial logo / whatsapp sources',
+				'timestamp'   => (int) round( microtime(true) * 1000 ),
+				'data'        => array(
+					'public_host_clean'    => $public_host_no_www,
+					'is_filial'            => ( $is_filial ? 1 : 0 ),
+					'filial_logo_source'  => $filial_logo_source,
+					'filial_logo_empty'   => ( empty( $filial_logo ) ? 1 : 0 ),
+					'cookie_revenda_set'  => ( empty( $_COOKIE['revenda_whatsapp'] ) ? 0 : 1 ),
+					'header_wamelink_source' => $header_wamelink_source,
+					'header_wamelink_empty'  => ( empty( $header_wamelink ) ? 1 : 0 ),
+				),
+			);
+			file_put_contents( $logPath, wp_json_encode( $payload ) . \"\\n\", FILE_APPEND );
+		} catch ( Exception $e ) {}
+		// #endregion
 		?>
 
 		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
