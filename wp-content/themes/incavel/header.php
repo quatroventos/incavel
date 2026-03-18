@@ -66,6 +66,12 @@ if ( ! session_id() ) {
 		$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
 		$is_filial          = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
 
+		// DEBUG SIMPLES: loga o host detectado no error_log e em comentário HTML.
+		if ( function_exists( 'error_log' ) ) {
+			error_log( 'INCAVEL_DEBUG_HOST: raw=' . $public_host . ' | clean=' . $public_host_no_www . ' | is_filial=' . ( $is_filial ? '1' : '0' ) );
+		}
+		echo "\n<!-- INCAVEL_DEBUG_HOST raw=" . esc_html( $public_host ) . " clean=" . esc_html( $public_host_no_www ) . " is_filial=" . ( $is_filial ? '1' : '0' ) . " -->\n";
+
 		// 2) Logo da filial:
 		//    - primeiro tenta pelo domínio (helper PHP),
 		//    - se vazio, tenta sessão (setada em single-representantes),
