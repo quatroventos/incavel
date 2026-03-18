@@ -542,6 +542,7 @@ function incavel_get_filial_logo_for_current_domain() {
 		'transbuspecas.com.br'      => 'transbus',
 		'buspartspr.com.br'         => 'buspartspr',
 		'cuiabaautoonibus.com.br'   => 'cuiaba-auto-onibus',
+		'autoonibuscascavel.com.br' => 'cascavel',
 	);
 
 	if ( ! isset( $map[ $host ] ) ) {
