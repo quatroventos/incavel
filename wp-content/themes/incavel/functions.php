@@ -464,23 +464,36 @@ if ( function_exists( 'register_nav_menus' ) ) {
 }
 
 /**
- * Helper: devolve o host público atual (HTTP_X_FORWARDED_HOST ou HTTP_HOST).
+ * Helper: devolve o host público atual, respeitando o domínio mascarado.
+ *
+ * Ordem:
+ * 1) HTTP_X_PUBLIC_HOST (setado pelos vhosts das filiais)
+ * 2) HTTP_X_FORWARDED_HOST (se existir)
+ * 3) HTTP_HOST
  */
 function incavel_get_current_public_host() {
+	// 1) Host público vindo do Apache (X-Public-Host)
+	if ( ! empty( $_SERVER['HTTP_X_PUBLIC_HOST'] ) ) {
+		$host = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_PUBLIC_HOST'] ) );
+		return preg_replace( '/^www\./', '', $host );
+	}
+
+	// 2) Depois X-Forwarded-Host (se existir)
 	if ( ! empty( $_SERVER['HTTP_X_FORWARDED_HOST'] ) ) {
 		$host = sanitize_text_field( wp_unslash( $_SERVER['HTTP_X_FORWARDED_HOST'] ) );
 		if ( strpos( $host, ',' ) !== false ) {
 			$host = trim( preg_replace( '/\s*,.*/', '', $host ) );
 		}
-		return $host;
+		return preg_replace( '/^www\./', '', $host );
 	}
 
+	// 3) Por fim HTTP_HOST
 	if ( ! empty( $_SERVER['HTTP_HOST'] ) ) {
 		$host = sanitize_text_field( wp_unslash( $_SERVER['HTTP_HOST'] ) );
 		if ( strpos( $host, ',' ) !== false ) {
 			$host = trim( preg_replace( '/\s*,.*/', '', $host ) );
 		}
-		return $host;
+		return preg_replace( '/^www\./', '', $host );
 	}
 
 	return 'incavel.com.br';
