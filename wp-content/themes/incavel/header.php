@@ -136,7 +136,7 @@ if ( ! session_id() ) {
 					'header_wamelink_empty'  => ( empty( $header_wamelink ) ? 1 : 0 ),
 				),
 			);
-			file_put_contents( $logPath, wp_json_encode( $payload ) . \"\\n\", FILE_APPEND );
+			file_put_contents( $logPath, wp_json_encode( $payload ) . "\n", FILE_APPEND );
 		} catch ( Exception $e ) {}
 		// #endregion
 		?>
