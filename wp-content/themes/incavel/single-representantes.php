@@ -24,6 +24,21 @@ if ( ( ! empty( $logo_url ) || ! empty( $wamelink ) ) ) {
 	if ( ! empty( $wamelink ) ) {
 		$_SESSION['filial_whatsapp'] = esc_url_raw( $wamelink );
 	}
+
+	// Salva também as tags/códigos personalizados da filial para páginas internas.
+	$meta_tags = get_field( 'meta_tags' );
+	$code_head = get_field( 'codigo_personalizado_head' );
+	$code_body = get_field( 'codigo_personalizado_body' );
+
+	if ( ! empty( $meta_tags ) ) {
+		$_SESSION['filial_meta_tags'] = $meta_tags;
+	}
+	if ( ! empty( $code_head ) ) {
+		$_SESSION['filial_codigo_personalizado_head'] = $code_head;
+	}
+	if ( ! empty( $code_body ) ) {
+		$_SESSION['filial_codigo_personalizado_body'] = $code_body;
+	}
 }
 
     // Grava o WhatsApp desta revenda em um cookie, para ser reutilizado em páginas de produto

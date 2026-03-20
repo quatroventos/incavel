@@ -8,9 +8,11 @@ if ( ! session_id() ) {
 <html <?php language_attributes(); ?>>
 <head>
 	<?php
-		$incavel_meta_tags = function_exists( 'incavel_get_acf_for_current_domain' ) ? incavel_get_acf_for_current_domain( 'meta_tags' ) : get_field( 'meta_tags' );
-		$incavel_code_head = function_exists( 'incavel_get_acf_for_current_domain' ) ? incavel_get_acf_for_current_domain( 'codigo_personalizado_head' ) : get_field( 'codigo_personalizado_head' );
-		$incavel_code_body = function_exists( 'incavel_get_acf_for_current_domain' ) ? incavel_get_acf_for_current_domain( 'codigo_personalizado_body' ) : get_field( 'codigo_personalizado_body' );
+		// Estratégia por sessão para tags/códigos da filial:
+		// primeiro tenta sessão; se não houver, usa o comportamento original (the_field/get_field da página atual).
+		$incavel_meta_tags = ! empty( $_SESSION['filial_meta_tags'] ) ? $_SESSION['filial_meta_tags'] : get_field( 'meta_tags' );
+		$incavel_code_head = ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? $_SESSION['filial_codigo_personalizado_head'] : get_field( 'codigo_personalizado_head' );
+		$incavel_code_body = ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? $_SESSION['filial_codigo_personalizado_body'] : get_field( 'codigo_personalizado_body' );
 	?>
 	<meta name="google-site-verification" content="<?php echo esc_attr( (string) $incavel_meta_tags ); ?>" />
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
@@ -38,7 +40,7 @@ if ( ! session_id() ) {
     <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/style-desktop.css" media="screen and (min-width: 768px)">
 
 	<script>
-		<?php echo wp_kses_post( (string) $incavel_code_head ); ?>
+		<?php echo (string) $incavel_code_head; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</script>
 
 </head>
@@ -52,7 +54,7 @@ if ( ! session_id() ) {
 	
 <body <?php body_class(); ?>>
 	<script>
-		<?php echo wp_kses_post( (string) $incavel_code_body ); ?>
+		<?php echo (string) $incavel_code_body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</script>
 <?php wp_body_open(); ?>
 	
