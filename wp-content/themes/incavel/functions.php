@@ -637,6 +637,60 @@ function incavel_get_revenda_whatsapp_link_for_current_domain() {
 }
 
 /**
+ * Retorna o ID do representante da filial com base no domínio atual.
+ */
+function incavel_get_representante_id_for_current_domain() {
+	$host = incavel_get_current_public_host();
+	$host = preg_replace( '/^www\./', '', $host );
+
+	if ( 'incavel.com.br' === $host ) {
+		return null;
+	}
+
+	$map = array(
+		'rondonibus.com.br'         => 'rondonibus',
+		'onipecas.com.br'           => 'onipecas',
+		'venbus.com.br'             => 'venbus',
+		'incavelfortaleza.com.br'   => 'incavel-fortaleza',
+		'nortebus.com.br'           => 'nortebus',
+		'transbuspecas.com.br'      => 'transbus',
+		'buspartspr.com.br'         => 'buspartspr',
+		'cuiabaautoonibus.com.br'   => 'cuiaba-auto-onibus',
+		'autoonibuscascavel.com.br' => 'cascavel',
+		'fortebus.com.br'           => 'fortebus',
+		'multibuspr.com.br'         => 'multibus',
+	);
+
+	if ( ! isset( $map[ $host ] ) ) {
+		return null;
+	}
+
+	$slug          = $map[ $host ];
+	$representante = get_page_by_path( $slug, OBJECT, 'representantes' );
+
+	return $representante ? (int) $representante->ID : null;
+}
+
+/**
+ * Busca um campo ACF da filial atual (representante) com fallback para contexto atual.
+ */
+function incavel_get_acf_for_current_domain( $field_name ) {
+	if ( ! function_exists( 'get_field' ) ) {
+		return null;
+	}
+
+	$representante_id = incavel_get_representante_id_for_current_domain();
+	if ( $representante_id ) {
+		$value = get_field( $field_name, $representante_id );
+		if ( ! empty( $value ) ) {
+			return $value;
+		}
+	}
+
+	return get_field( $field_name );
+}
+
+/**
  * Força links permanentes (posts, páginas, CPTs) a serem relativos no frontend.
  * Assim qualquer domínio mascarado (rondonibus, onipecas, etc.) mantém o host atual.
  */

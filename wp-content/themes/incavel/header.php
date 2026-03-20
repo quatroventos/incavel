@@ -7,7 +7,12 @@ if ( ! session_id() ) {
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
-        <meta name="google-site-verification" content="<?php the_field('meta_tags'); ?>" />
+	<?php
+		$incavel_meta_tags = function_exists( 'incavel_get_acf_for_current_domain' ) ? incavel_get_acf_for_current_domain( 'meta_tags' ) : get_field( 'meta_tags' );
+		$incavel_code_head = function_exists( 'incavel_get_acf_for_current_domain' ) ? incavel_get_acf_for_current_domain( 'codigo_personalizado_head' ) : get_field( 'codigo_personalizado_head' );
+		$incavel_code_body = function_exists( 'incavel_get_acf_for_current_domain' ) ? incavel_get_acf_for_current_domain( 'codigo_personalizado_body' ) : get_field( 'codigo_personalizado_body' );
+	?>
+	<meta name="google-site-verification" content="<?php echo esc_attr( (string) $incavel_meta_tags ); ?>" />
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
@@ -33,7 +38,7 @@ if ( ! session_id() ) {
     <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/style-desktop.css" media="screen and (min-width: 768px)">
 
 	<script>
-		<?php the_field("codigo_personalizado_head"); ?>
+		<?php echo wp_kses_post( (string) $incavel_code_head ); ?>
 	</script>
 
 </head>
@@ -47,7 +52,7 @@ if ( ! session_id() ) {
 	
 <body <?php body_class(); ?>>
 	<script>
-		<?php the_field("codigo_personalizado_body"); ?>
+		<?php echo wp_kses_post( (string) $incavel_code_body ); ?>
 	</script>
 <?php wp_body_open(); ?>
 	
