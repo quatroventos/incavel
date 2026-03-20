@@ -17,6 +17,9 @@ if ( ! session_id() ) {
 		$field_meta_tags = get_field( 'meta_tags' );
 		$field_code_head = get_field( 'codigo_personalizado_head' );
 		$field_code_body = get_field( 'codigo_personalizado_body' );
+		$option_meta_tags = get_field( 'meta_tags', 'option' );
+		$option_code_head = get_field( 'codigo_personalizado_head', 'option' );
+		$option_code_body = get_field( 'codigo_personalizado_body', 'option' );
 
 		$incavel_meta_tags = ! empty( $session_meta_tags ) ? $session_meta_tags : $field_meta_tags;
 		$incavel_code_head = ! empty( $session_code_head ) ? $session_code_head : $field_code_head;
@@ -55,7 +58,7 @@ if ( ! session_id() ) {
 	// #endregion
 	</script>
 	<!-- #region agent log -->
-	<?php echo '<!-- ACF_DEBUG sessionMeta=' . ( ! empty( $session_meta_tags ) ? '1' : '0' ) . ' sessionHead=' . ( ! empty( $session_code_head ) ? '1' : '0' ) . ' sessionBody=' . ( ! empty( $session_code_body ) ? '1' : '0' ) . ' fieldMeta=' . ( ! empty( $field_meta_tags ) ? '1' : '0' ) . ' fieldHead=' . ( ! empty( $field_code_head ) ? '1' : '0' ) . ' fieldBody=' . ( ! empty( $field_code_body ) ? '1' : '0' ) . ' finalMeta=' . ( ! empty( $incavel_meta_tags ) ? '1' : '0' ) . ' finalHead=' . ( ! empty( $incavel_code_head ) ? '1' : '0' ) . ' finalBody=' . ( ! empty( $incavel_code_body ) ? '1' : '0' ) . ' -->'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	<?php echo '<!-- ACF_DEBUG sessionMeta=' . ( ! empty( $session_meta_tags ) ? '1' : '0' ) . ' sessionHead=' . ( ! empty( $session_code_head ) ? '1' : '0' ) . ' sessionBody=' . ( ! empty( $session_code_body ) ? '1' : '0' ) . ' fieldMeta=' . ( ! empty( $field_meta_tags ) ? '1' : '0' ) . ' fieldHead=' . ( ! empty( $field_code_head ) ? '1' : '0' ) . ' fieldBody=' . ( ! empty( $field_code_body ) ? '1' : '0' ) . ' optionMeta=' . ( ! empty( $option_meta_tags ) ? '1' : '0' ) . ' optionHead=' . ( ! empty( $option_code_head ) ? '1' : '0' ) . ' optionBody=' . ( ! empty( $option_code_body ) ? '1' : '0' ) . ' finalMeta=' . ( ! empty( $incavel_meta_tags ) ? '1' : '0' ) . ' finalHead=' . ( ! empty( $incavel_code_head ) ? '1' : '0' ) . ' finalBody=' . ( ! empty( $incavel_code_body ) ? '1' : '0' ) . ' -->'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	<!-- #endregion -->
 	<?php if ( ! empty( $incavel_meta_tags ) ) : ?>
 		<?php echo (string) $incavel_meta_tags; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
