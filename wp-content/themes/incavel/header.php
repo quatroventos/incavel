@@ -49,6 +49,11 @@ if ( ! session_id() ) {
 		} catch ( Exception $e ) {}
 		// #endregion
 	?>
+	<script>
+	// #region agent log
+	fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run2',hypothesisId:'H_header_render_path',location:'header.php:pre-render',message:'Header resolved ACF/session before output',data:{host:window.location.hostname,sessionMetaSet:<?php echo ! empty( $session_meta_tags ) ? 'true' : 'false'; ?>,sessionHeadSet:<?php echo ! empty( $session_code_head ) ? 'true' : 'false'; ?>,sessionBodySet:<?php echo ! empty( $session_code_body ) ? 'true' : 'false'; ?>,fieldMetaSet:<?php echo ! empty( $field_meta_tags ) ? 'true' : 'false'; ?>,fieldHeadSet:<?php echo ! empty( $field_code_head ) ? 'true' : 'false'; ?>,fieldBodySet:<?php echo ! empty( $field_code_body ) ? 'true' : 'false'; ?>,finalMetaSet:<?php echo ! empty( $incavel_meta_tags ) ? 'true' : 'false'; ?>,finalHeadSet:<?php echo ! empty( $incavel_code_head ) ? 'true' : 'false'; ?>,finalBodySet:<?php echo ! empty( $incavel_code_body ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
+	// #endregion
+	</script>
 	<meta name="google-site-verification" content="<?php the_field('meta_tags'); ?>" />
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -75,6 +80,9 @@ if ( ! session_id() ) {
     <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/style-desktop.css" media="screen and (min-width: 768px)">
 
 	<script>
+		// #region agent log
+		fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run2',hypothesisId:'H_head_output_source',location:'header.php:head-script-output',message:'About to print codigo_personalizado_head via the_field',data:{host:window.location.hostname,finalHeadSet:<?php echo ! empty( $incavel_code_head ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
+		// #endregion
 		<?php the_field("codigo_personalizado_head"); ?>
 	</script>
 
@@ -89,6 +97,9 @@ if ( ! session_id() ) {
 	
 <body <?php body_class(); ?>>
 	<script>
+		// #region agent log
+		fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run2',hypothesisId:'H_body_output_source',location:'header.php:body-script-output',message:'About to print codigo_personalizado_body via the_field',data:{host:window.location.hostname,finalBodySet:<?php echo ! empty( $incavel_code_body ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
+		// #endregion
 		<?php the_field("codigo_personalizado_body"); ?>
 	</script>
 <?php wp_body_open(); ?>
