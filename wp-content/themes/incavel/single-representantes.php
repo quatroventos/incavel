@@ -9,6 +9,19 @@ the_post();
 
 $contato  = get_field('contato');
 $logo_url = get_field('logo');
+    $all_fields = get_fields();
+    $candidate_keys = array();
+    if ( is_array( $all_fields ) ) {
+        foreach ( $all_fields as $acf_key => $acf_value ) {
+            if (
+                false !== strpos( (string) $acf_key, 'codigo' ) ||
+                false !== strpos( (string) $acf_key, 'meta' ) ||
+                false !== strpos( (string) $acf_key, 'tag' )
+            ) {
+                $candidate_keys[] = (string) $acf_key;
+            }
+        }
+    }
     $search = array(' ','-', '(', ')');
 
 $wamelink = 'https://wa.me/'.str_replace($search, '', $contato['whatsapp']);
@@ -69,7 +82,8 @@ if ( ( ! empty( $logo_url ) || ! empty( $wamelink ) ) ) {
     // quando o acesso vier por domínio de filial.
     ?>
     <!-- #region agent log -->
-    <?php echo '<!-- ACF_REP_DEBUG host=' . ( function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : '' ) . ' logo=' . ( ! empty( $logo_url ) ? '1' : '0' ) . ' wa=' . ( ! empty( $wamelink ) ? '1' : '0' ) . ' meta=' . ( ! empty( $meta_tags ) ? '1' : '0' ) . ' head=' . ( ! empty( $code_head ) ? '1' : '0' ) . ' body=' . ( ! empty( $code_body ) ? '1' : '0' ) . ' sessionMeta=' . ( ! empty( $_SESSION['filial_meta_tags'] ) ? '1' : '0' ) . ' sessionHead=' . ( ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? '1' : '0' ) . ' sessionBody=' . ( ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? '1' : '0' ) . ' -->'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+    <?php echo '<!-- ACF_REP_DEBUG host=' . ( function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : '' ) . ' logo=' . ( ! empty( $logo_url ) ? '1' : '0' ) . ' wa=' . ( ! empty( $wamelink ) ? '1' : '0' ) . ' meta=' . ( ! empty( $meta_tags ) ? '1' : '0' ) . ' head=' . ( ! empty( $code_head ) ? '1' : '0' ) . ' body=' . ( ! empty( $code_body ) ? '1' : '0' ) . ' sessionMeta=' . ( ! empty( $_SESSION['filial_meta_tags'] ) ? '1' : '0' ) . ' sessionHead=' . ( ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? '1' : '0' ) . ' sessionBody=' . ( ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? '1' : '0' ) . ' keys=' . esc_attr( wp_json_encode( $candidate_keys ) ) . ' -->'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+    <pre class="acf-debug-print" style="display:none;"><?php print_r( $all_fields ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r,WordPress.Security.EscapeOutput.OutputNotEscaped ?></pre>
     <!-- #endregion -->
     <script>
         (function() {
