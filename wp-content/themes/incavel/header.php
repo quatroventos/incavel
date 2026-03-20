@@ -42,7 +42,7 @@ if ( ! session_id() ) {
 		<?php echo wp_kses_post( (string) $incavel_code_head ); ?>
 	</script>
 
-<?php the_field("codigo_personalizado_head"); ?>" />
+<?php the_field("codigo_personalizado_head"); ?>
 
 </head>
 
@@ -59,7 +59,7 @@ if ( ! session_id() ) {
 	</script>
 <?php wp_body_open(); ?>
 
-<?php the_field("codigo_personalizado_body"); ?>" />
+<?php the_field("codigo_personalizado_body"); ?>
 	
 <a href="#main" class="visually-hidden-focusable"><?php esc_html_e( 'Skip to main content', 'incavel' ); ?></a>
 
