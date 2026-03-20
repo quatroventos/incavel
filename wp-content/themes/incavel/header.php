@@ -22,9 +22,11 @@ if ( ! session_id() ) {
 		$incavel_code_head = ! empty( $session_code_head ) ? $session_code_head : $field_code_head;
 		$incavel_code_body = ! empty( $session_code_body ) ? $session_code_body : $field_code_body;
 	?>
+
 	<?php if ( ! empty( $incavel_meta_tags ) ) : ?>
-		<?php echo (string) $incavel_meta_tags; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<meta name="google-site-verification" content="<?php echo (string) $incavel_meta_tags; ?>" />
 	<?php endif; ?>
+	
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
