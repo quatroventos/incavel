@@ -39,6 +39,30 @@ if ( ( ! empty( $logo_url ) || ! empty( $wamelink ) ) ) {
 	if ( ! empty( $code_body ) ) {
 		$_SESSION['filial_codigo_personalizado_body'] = $code_body;
 	}
+
+	// #region agent log
+	try {
+		$logPath = '/Users/gabriel/VisualStudioProjects/incavel/incavel/.cursor/debug-c605db.log';
+		$payload = array(
+			'sessionId'   => 'c605db',
+			'runId'       => 'run1',
+			'hypothesisId'=> 'H_session_seed_representante',
+			'location'    => 'single-representantes.php:session-seed',
+			'message'     => 'Seeded filial session values from representante page',
+			'timestamp'   => (int) round( microtime(true) * 1000 ),
+			'data'        => array(
+				'post_id'                => get_the_ID(),
+				'host'                   => ( function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : '' ),
+				'logo_set'               => ( empty( $logo_url ) ? 0 : 1 ),
+				'wamelink_set'           => ( empty( $wamelink ) ? 0 : 1 ),
+				'meta_set'               => ( empty( $meta_tags ) ? 0 : 1 ),
+				'code_head_set'          => ( empty( $code_head ) ? 0 : 1 ),
+				'code_body_set'          => ( empty( $code_body ) ? 0 : 1 ),
+			),
+		);
+		file_put_contents( $logPath, wp_json_encode( $payload ) . "\n", FILE_APPEND );
+	} catch ( Exception $e ) {}
+	// #endregion
 }
 
     // Grava o WhatsApp desta revenda em um cookie, para ser reutilizado em páginas de produto

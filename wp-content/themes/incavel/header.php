@@ -10,11 +10,46 @@ if ( ! session_id() ) {
 	<?php
 		// Estratégia por sessão para tags/códigos da filial:
 		// primeiro tenta sessão; se não houver, usa o comportamento original (the_field/get_field da página atual).
-		$incavel_meta_tags = ! empty( $_SESSION['filial_meta_tags'] ) ? $_SESSION['filial_meta_tags'] : get_field( 'meta_tags' );
-		$incavel_code_head = ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? $_SESSION['filial_codigo_personalizado_head'] : get_field( 'codigo_personalizado_head' );
-		$incavel_code_body = ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? $_SESSION['filial_codigo_personalizado_body'] : get_field( 'codigo_personalizado_body' );
+		$session_meta_tags = ! empty( $_SESSION['filial_meta_tags'] ) ? $_SESSION['filial_meta_tags'] : '';
+		$session_code_head = ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? $_SESSION['filial_codigo_personalizado_head'] : '';
+		$session_code_body = ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? $_SESSION['filial_codigo_personalizado_body'] : '';
+
+		$field_meta_tags = get_field( 'meta_tags' );
+		$field_code_head = get_field( 'codigo_personalizado_head' );
+		$field_code_body = get_field( 'codigo_personalizado_body' );
+
+		$incavel_meta_tags = ! empty( $session_meta_tags ) ? $session_meta_tags : $field_meta_tags;
+		$incavel_code_head = ! empty( $session_code_head ) ? $session_code_head : $field_code_head;
+		$incavel_code_body = ! empty( $session_code_body ) ? $session_code_body : $field_code_body;
+
+		// #region agent log
+		try {
+			$logPath = '/Users/gabriel/VisualStudioProjects/incavel/incavel/.cursor/debug-c605db.log';
+			$payload = array(
+				'sessionId'   => 'c605db',
+				'runId'       => 'run1',
+				'hypothesisId'=> 'H_header_acf_resolution',
+				'location'    => 'header.php:head-acf-resolution',
+				'message'     => 'Resolved head/body ACF values from session or field',
+				'timestamp'   => (int) round( microtime(true) * 1000 ),
+				'data'        => array(
+					'host'                  => ( function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : '' ),
+					'session_meta_set'      => ( empty( $session_meta_tags ) ? 0 : 1 ),
+					'session_head_set'      => ( empty( $session_code_head ) ? 0 : 1 ),
+					'session_body_set'      => ( empty( $session_code_body ) ? 0 : 1 ),
+					'field_meta_set'        => ( empty( $field_meta_tags ) ? 0 : 1 ),
+					'field_head_set'        => ( empty( $field_code_head ) ? 0 : 1 ),
+					'field_body_set'        => ( empty( $field_code_body ) ? 0 : 1 ),
+					'final_meta_set'        => ( empty( $incavel_meta_tags ) ? 0 : 1 ),
+					'final_head_set'        => ( empty( $incavel_code_head ) ? 0 : 1 ),
+					'final_body_set'        => ( empty( $incavel_code_body ) ? 0 : 1 ),
+				),
+			);
+			file_put_contents( $logPath, wp_json_encode( $payload ) . "\n", FILE_APPEND );
+		} catch ( Exception $e ) {}
+		// #endregion
 	?>
-	<meta name="google-site-verification" content="<?php echo esc_attr( (string) $incavel_meta_tags ); ?>" />
+	<meta name="google-site-verification" content="<?php the_field('meta_tags'); ?>" />
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
@@ -40,7 +75,7 @@ if ( ! session_id() ) {
     <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/style-desktop.css" media="screen and (min-width: 768px)">
 
 	<script>
-		<?php echo (string) $incavel_code_head; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<?php the_field("codigo_personalizado_head"); ?>
 	</script>
 
 </head>
@@ -54,7 +89,7 @@ if ( ! session_id() ) {
 	
 <body <?php body_class(); ?>>
 	<script>
-		<?php echo (string) $incavel_code_body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<?php the_field("codigo_personalizado_body"); ?>
 	</script>
 <?php wp_body_open(); ?>
 	
