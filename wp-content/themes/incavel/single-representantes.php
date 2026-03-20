@@ -68,9 +68,15 @@ if ( ( ! empty( $logo_url ) || ! empty( $wamelink ) ) ) {
     // Grava o WhatsApp desta revenda em um cookie, para ser reutilizado em páginas de produto
     // quando o acesso vier por domínio de filial.
     ?>
+    <!-- #region agent log -->
+    <?php echo '<!-- ACF_REP_DEBUG host=' . ( function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : '' ) . ' logo=' . ( ! empty( $logo_url ) ? '1' : '0' ) . ' wa=' . ( ! empty( $wamelink ) ? '1' : '0' ) . ' meta=' . ( ! empty( $meta_tags ) ? '1' : '0' ) . ' head=' . ( ! empty( $code_head ) ? '1' : '0' ) . ' body=' . ( ! empty( $code_body ) ? '1' : '0' ) . ' sessionMeta=' . ( ! empty( $_SESSION['filial_meta_tags'] ) ? '1' : '0' ) . ' sessionHead=' . ( ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? '1' : '0' ) . ' sessionBody=' . ( ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? '1' : '0' ) . ' -->'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+    <!-- #endregion -->
     <script>
         (function() {
             try {
+                // #region agent log
+                fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run3',hypothesisId:'H_session_seed_representante',location:'single-representantes.php:browser-runtime',message:'Representante page runtime with ACF/session values',data:{host:window.location.hostname,metaSet:<?php echo ! empty( $meta_tags ) ? 'true' : 'false'; ?>,headSet:<?php echo ! empty( $code_head ) ? 'true' : 'false'; ?>,bodySet:<?php echo ! empty( $code_body ) ? 'true' : 'false'; ?>,sessionMetaSet:<?php echo ! empty( $_SESSION['filial_meta_tags'] ) ? 'true' : 'false'; ?>,sessionHeadSet:<?php echo ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? 'true' : 'false'; ?>,sessionBodySet:<?php echo ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
+                // #endregion
                 var host = window.location.hostname.replace(/^www\./, '');
                 if (host !== 'incavel.com.br') {
                     var wamelink = <?php echo json_encode( $wamelink ); ?>;

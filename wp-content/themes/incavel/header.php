@@ -57,7 +57,9 @@ if ( ! session_id() ) {
 	<!-- #region agent log -->
 	<?php echo '<!-- ACF_DEBUG sessionMeta=' . ( ! empty( $session_meta_tags ) ? '1' : '0' ) . ' sessionHead=' . ( ! empty( $session_code_head ) ? '1' : '0' ) . ' sessionBody=' . ( ! empty( $session_code_body ) ? '1' : '0' ) . ' fieldMeta=' . ( ! empty( $field_meta_tags ) ? '1' : '0' ) . ' fieldHead=' . ( ! empty( $field_code_head ) ? '1' : '0' ) . ' fieldBody=' . ( ! empty( $field_code_body ) ? '1' : '0' ) . ' finalMeta=' . ( ! empty( $incavel_meta_tags ) ? '1' : '0' ) . ' finalHead=' . ( ! empty( $incavel_code_head ) ? '1' : '0' ) . ' finalBody=' . ( ! empty( $incavel_code_body ) ? '1' : '0' ) . ' -->'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	<!-- #endregion -->
-	<meta name="google-site-verification" content="<?php the_field('meta_tags'); ?>" />
+	<?php if ( ! empty( $incavel_meta_tags ) ) : ?>
+		<?php echo (string) $incavel_meta_tags; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+	<?php endif; ?>
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
@@ -86,7 +88,11 @@ if ( ! session_id() ) {
 		// #region agent log
 		fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run2',hypothesisId:'H_head_output_source',location:'header.php:head-script-output',message:'About to print codigo_personalizado_head via the_field',data:{host:window.location.hostname,finalHeadSet:<?php echo ! empty( $incavel_code_head ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
 		// #endregion
-		<?php the_field("codigo_personalizado_head"); ?>
+		<?php
+		if ( ! empty( $incavel_code_head ) ) {
+			echo (string) $incavel_code_head; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		?>
 	</script>
 
 </head>
@@ -103,7 +109,11 @@ if ( ! session_id() ) {
 		// #region agent log
 		fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run2',hypothesisId:'H_body_output_source',location:'header.php:body-script-output',message:'About to print codigo_personalizado_body via the_field',data:{host:window.location.hostname,finalBodySet:<?php echo ! empty( $incavel_code_body ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
 		// #endregion
-		<?php the_field("codigo_personalizado_body"); ?>
+		<?php
+		if ( ! empty( $incavel_code_body ) ) {
+			echo (string) $incavel_code_body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		?>
 	</script>
 <?php wp_body_open(); ?>
 	
