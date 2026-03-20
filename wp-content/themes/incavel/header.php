@@ -13,6 +13,7 @@ if ( ! session_id() ) {
 		$incavel_code_body = function_exists( 'incavel_get_acf_for_current_domain' ) ? incavel_get_acf_for_current_domain( 'codigo_personalizado_body' ) : get_field( 'codigo_personalizado_body' );
 	?>
 	<meta name="google-site-verification" content="<?php echo esc_attr( (string) $incavel_meta_tags ); ?>" />
+	<meta name="google-site-verification" content="<?php the_field("meta_tags"); ?>" />
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
@@ -41,6 +42,8 @@ if ( ! session_id() ) {
 		<?php echo wp_kses_post( (string) $incavel_code_head ); ?>
 	</script>
 
+<?php the_field("codigo_personalizado_head"); ?>" />
+
 </head>
 
 <?php
@@ -55,6 +58,8 @@ if ( ! session_id() ) {
 		<?php echo wp_kses_post( (string) $incavel_code_body ); ?>
 	</script>
 <?php wp_body_open(); ?>
+
+<?php the_field("codigo_personalizado_body"); ?>" />
 	
 <a href="#main" class="visually-hidden-focusable"><?php esc_html_e( 'Skip to main content', 'incavel' ); ?></a>
 
