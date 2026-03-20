@@ -679,15 +679,37 @@ function incavel_get_acf_for_current_domain( $field_name ) {
 		return null;
 	}
 
+	// 1) Se já houver em sessão, usa direto.
+	$session_key = 'filial_' . sanitize_key( $field_name );
+	if ( ! empty( $_SESSION[ $session_key ] ) ) {
+		return $_SESSION[ $session_key ];
+	}
+
+	$value = null;
+
+	// 2) Tenta pelo representante da filial atual.
 	$representante_id = incavel_get_representante_id_for_current_domain();
 	if ( $representante_id ) {
 		$value = get_field( $field_name, $representante_id );
 		if ( ! empty( $value ) ) {
+			$_SESSION[ $session_key ] = $value;
 			return $value;
 		}
 	}
 
-	return get_field( $field_name );
+	// 3) Fallback: campo da página atual.
+	$value = get_field( $field_name );
+	if ( ! empty( $value ) ) {
+		return $value;
+	}
+
+	// 4) Fallback final: opções globais do tema.
+	$value = get_field( $field_name, 'option' );
+	if ( ! empty( $value ) ) {
+		return $value;
+	}
+
+	return null;
 }
 
 /**
