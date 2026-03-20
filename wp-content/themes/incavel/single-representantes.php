@@ -9,19 +9,6 @@ the_post();
 
 $contato  = get_field('contato');
 $logo_url = get_field('logo');
-    $all_fields = get_fields();
-    $candidate_keys = array();
-    if ( is_array( $all_fields ) ) {
-        foreach ( $all_fields as $acf_key => $acf_value ) {
-            if (
-                false !== strpos( (string) $acf_key, 'codigo' ) ||
-                false !== strpos( (string) $acf_key, 'meta' ) ||
-                false !== strpos( (string) $acf_key, 'tag' )
-            ) {
-                $candidate_keys[] = (string) $acf_key;
-            }
-        }
-    }
     $search = array(' ','-', '(', ')');
 
 $wamelink = 'https://wa.me/'.str_replace($search, '', $contato['whatsapp']);
@@ -52,45 +39,14 @@ if ( ( ! empty( $logo_url ) || ! empty( $wamelink ) ) ) {
 	if ( ! empty( $code_body ) ) {
 		$_SESSION['filial_codigo_personalizado_body'] = $code_body;
 	}
-
-	// #region agent log
-	try {
-		$logPath = '/Users/gabriel/VisualStudioProjects/incavel/incavel/.cursor/debug-c605db.log';
-		$payload = array(
-			'sessionId'   => 'c605db',
-			'runId'       => 'run1',
-			'hypothesisId'=> 'H_session_seed_representante',
-			'location'    => 'single-representantes.php:session-seed',
-			'message'     => 'Seeded filial session values from representante page',
-			'timestamp'   => (int) round( microtime(true) * 1000 ),
-			'data'        => array(
-				'post_id'                => get_the_ID(),
-				'host'                   => ( function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : '' ),
-				'logo_set'               => ( empty( $logo_url ) ? 0 : 1 ),
-				'wamelink_set'           => ( empty( $wamelink ) ? 0 : 1 ),
-				'meta_set'               => ( empty( $meta_tags ) ? 0 : 1 ),
-				'code_head_set'          => ( empty( $code_head ) ? 0 : 1 ),
-				'code_body_set'          => ( empty( $code_body ) ? 0 : 1 ),
-			),
-		);
-		file_put_contents( $logPath, wp_json_encode( $payload ) . "\n", FILE_APPEND );
-	} catch ( Exception $e ) {}
-	// #endregion
 }
 
     // Grava o WhatsApp desta revenda em um cookie, para ser reutilizado em páginas de produto
     // quando o acesso vier por domínio de filial.
     ?>
-    <!-- #region agent log -->
-    <?php echo '<!-- ACF_REP_DEBUG host=' . ( function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : '' ) . ' logo=' . ( ! empty( $logo_url ) ? '1' : '0' ) . ' wa=' . ( ! empty( $wamelink ) ? '1' : '0' ) . ' meta=' . ( ! empty( $meta_tags ) ? '1' : '0' ) . ' head=' . ( ! empty( $code_head ) ? '1' : '0' ) . ' body=' . ( ! empty( $code_body ) ? '1' : '0' ) . ' sessionMeta=' . ( ! empty( $_SESSION['filial_meta_tags'] ) ? '1' : '0' ) . ' sessionHead=' . ( ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? '1' : '0' ) . ' sessionBody=' . ( ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? '1' : '0' ) . ' keys=' . esc_attr( wp_json_encode( $candidate_keys ) ) . ' -->'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-    <pre class="acf-debug-print" style="display:none;"><?php print_r( $all_fields ); // phpcs:ignore WordPress.PHP.DevelopmentFunctions.error_log_print_r,WordPress.Security.EscapeOutput.OutputNotEscaped ?></pre>
-    <!-- #endregion -->
     <script>
         (function() {
             try {
-                // #region agent log
-                fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run3',hypothesisId:'H_session_seed_representante',location:'single-representantes.php:browser-runtime',message:'Representante page runtime with ACF/session values',data:{host:window.location.hostname,metaSet:<?php echo ! empty( $meta_tags ) ? 'true' : 'false'; ?>,headSet:<?php echo ! empty( $code_head ) ? 'true' : 'false'; ?>,bodySet:<?php echo ! empty( $code_body ) ? 'true' : 'false'; ?>,sessionMetaSet:<?php echo ! empty( $_SESSION['filial_meta_tags'] ) ? 'true' : 'false'; ?>,sessionHeadSet:<?php echo ! empty( $_SESSION['filial_codigo_personalizado_head'] ) ? 'true' : 'false'; ?>,sessionBodySet:<?php echo ! empty( $_SESSION['filial_codigo_personalizado_body'] ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
-                // #endregion
                 var host = window.location.hostname.replace(/^www\./, '');
                 if (host !== 'incavel.com.br') {
                     var wamelink = <?php echo json_encode( $wamelink ); ?>;

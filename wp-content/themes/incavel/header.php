@@ -17,49 +17,11 @@ if ( ! session_id() ) {
 		$field_meta_tags = get_field( 'meta_tags' );
 		$field_code_head = get_field( 'codigo_personalizado_head' );
 		$field_code_body = get_field( 'codigo_personalizado_body' );
-		$option_meta_tags = get_field( 'meta_tags', 'option' );
-		$option_code_head = get_field( 'codigo_personalizado_head', 'option' );
-		$option_code_body = get_field( 'codigo_personalizado_body', 'option' );
 
 		$incavel_meta_tags = ! empty( $session_meta_tags ) ? $session_meta_tags : $field_meta_tags;
 		$incavel_code_head = ! empty( $session_code_head ) ? $session_code_head : $field_code_head;
 		$incavel_code_body = ! empty( $session_code_body ) ? $session_code_body : $field_code_body;
-
-		// #region agent log
-		try {
-			$logPath = '/Users/gabriel/VisualStudioProjects/incavel/incavel/.cursor/debug-c605db.log';
-			$payload = array(
-				'sessionId'   => 'c605db',
-				'runId'       => 'run1',
-				'hypothesisId'=> 'H_header_acf_resolution',
-				'location'    => 'header.php:head-acf-resolution',
-				'message'     => 'Resolved head/body ACF values from session or field',
-				'timestamp'   => (int) round( microtime(true) * 1000 ),
-				'data'        => array(
-					'host'                  => ( function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : '' ),
-					'session_meta_set'      => ( empty( $session_meta_tags ) ? 0 : 1 ),
-					'session_head_set'      => ( empty( $session_code_head ) ? 0 : 1 ),
-					'session_body_set'      => ( empty( $session_code_body ) ? 0 : 1 ),
-					'field_meta_set'        => ( empty( $field_meta_tags ) ? 0 : 1 ),
-					'field_head_set'        => ( empty( $field_code_head ) ? 0 : 1 ),
-					'field_body_set'        => ( empty( $field_code_body ) ? 0 : 1 ),
-					'final_meta_set'        => ( empty( $incavel_meta_tags ) ? 0 : 1 ),
-					'final_head_set'        => ( empty( $incavel_code_head ) ? 0 : 1 ),
-					'final_body_set'        => ( empty( $incavel_code_body ) ? 0 : 1 ),
-				),
-			);
-			file_put_contents( $logPath, wp_json_encode( $payload ) . "\n", FILE_APPEND );
-		} catch ( Exception $e ) {}
-		// #endregion
 	?>
-	<script>
-	// #region agent log
-	fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run2',hypothesisId:'H_header_render_path',location:'header.php:pre-render',message:'Header resolved ACF/session before output',data:{host:window.location.hostname,sessionMetaSet:<?php echo ! empty( $session_meta_tags ) ? 'true' : 'false'; ?>,sessionHeadSet:<?php echo ! empty( $session_code_head ) ? 'true' : 'false'; ?>,sessionBodySet:<?php echo ! empty( $session_code_body ) ? 'true' : 'false'; ?>,fieldMetaSet:<?php echo ! empty( $field_meta_tags ) ? 'true' : 'false'; ?>,fieldHeadSet:<?php echo ! empty( $field_code_head ) ? 'true' : 'false'; ?>,fieldBodySet:<?php echo ! empty( $field_code_body ) ? 'true' : 'false'; ?>,finalMetaSet:<?php echo ! empty( $incavel_meta_tags ) ? 'true' : 'false'; ?>,finalHeadSet:<?php echo ! empty( $incavel_code_head ) ? 'true' : 'false'; ?>,finalBodySet:<?php echo ! empty( $incavel_code_body ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
-	// #endregion
-	</script>
-	<!-- #region agent log -->
-	<?php echo '<!-- ACF_DEBUG sessionMeta=' . ( ! empty( $session_meta_tags ) ? '1' : '0' ) . ' sessionHead=' . ( ! empty( $session_code_head ) ? '1' : '0' ) . ' sessionBody=' . ( ! empty( $session_code_body ) ? '1' : '0' ) . ' fieldMeta=' . ( ! empty( $field_meta_tags ) ? '1' : '0' ) . ' fieldHead=' . ( ! empty( $field_code_head ) ? '1' : '0' ) . ' fieldBody=' . ( ! empty( $field_code_body ) ? '1' : '0' ) . ' optionMeta=' . ( ! empty( $option_meta_tags ) ? '1' : '0' ) . ' optionHead=' . ( ! empty( $option_code_head ) ? '1' : '0' ) . ' optionBody=' . ( ! empty( $option_code_body ) ? '1' : '0' ) . ' finalMeta=' . ( ! empty( $incavel_meta_tags ) ? '1' : '0' ) . ' finalHead=' . ( ! empty( $incavel_code_head ) ? '1' : '0' ) . ' finalBody=' . ( ! empty( $incavel_code_body ) ? '1' : '0' ) . ' -->'; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-	<!-- #endregion -->
 	<?php if ( ! empty( $incavel_meta_tags ) ) : ?>
 		<?php echo (string) $incavel_meta_tags; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	<?php endif; ?>
@@ -88,9 +50,6 @@ if ( ! session_id() ) {
     <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/style-desktop.css" media="screen and (min-width: 768px)">
 
 	<script>
-		// #region agent log
-		fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run2',hypothesisId:'H_head_output_source',location:'header.php:head-script-output',message:'About to print codigo_personalizado_head via the_field',data:{host:window.location.hostname,finalHeadSet:<?php echo ! empty( $incavel_code_head ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
-		// #endregion
 		<?php
 		if ( ! empty( $incavel_code_head ) ) {
 			echo (string) $incavel_code_head; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
@@ -109,9 +68,6 @@ if ( ! session_id() ) {
 	
 <body <?php body_class(); ?>>
 	<script>
-		// #region agent log
-		fetch('http://127.0.0.1:7676/ingest/500ab85a-d51d-4a87-9a4b-aec0b61c84fb',{method:'POST',headers:{'Content-Type':'application/json','X-Debug-Session-Id':'c605db'},body:JSON.stringify({sessionId:'c605db',runId:'run2',hypothesisId:'H_body_output_source',location:'header.php:body-script-output',message:'About to print codigo_personalizado_body via the_field',data:{host:window.location.hostname,finalBodySet:<?php echo ! empty( $incavel_code_body ) ? 'true' : 'false'; ?>},timestamp:Date.now()})}).catch(()=>{});
-		// #endregion
 		<?php
 		if ( ! empty( $incavel_code_body ) ) {
 			echo (string) $incavel_code_body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
