@@ -4,6 +4,47 @@ if ( ! session_id() ) {
 	session_start();
 }
 ?>
+
+<?php
+	// 1) Detecta domínio atual e se é filial (qualquer domínio diferente de incavel.com.br).
+	$public_host        = function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : ( $_SERVER['HTTP_HOST'] ?? '' );
+	$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
+	$is_filial          = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
+
+	// 2) Logo da filial:
+	//    - primeiro tenta pelo domínio (helper PHP),
+	//    - se vazio, tenta sessão (setada em single-representantes),
+	//    - se ainda vazio, cai na logo padrão do tema no HTML abaixo.
+	$filial_logo = '';
+	if ( $is_filial && function_exists( 'incavel_get_filial_logo_for_current_domain' ) ) {
+		$filial_logo = incavel_get_filial_logo_for_current_domain();
+	}
+	if ( $is_filial && ! $filial_logo && ! empty( $_SESSION['filial_logo'] ) ) {
+		$filial_logo = $_SESSION['filial_logo'];
+	}
+
+	// 3) WhatsApp do header:
+	//    - cookie revenda_whatsapp (mesma "sessão" já usada em single-produto),
+	//    - se vazio, helper PHP por domínio,
+	//    - se vazio, WhatsApp global das opções do tema.
+	$header_wamelink = '';
+	if ( ! empty( $_COOKIE['revenda_whatsapp'] ) ) {
+		$header_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
+	}
+	if ( ! $header_wamelink && function_exists( 'incavel_get_revenda_whatsapp_link_for_current_domain' ) ) {
+		$header_wamelink = incavel_get_revenda_whatsapp_link_for_current_domain();
+	}
+	if ( ! $header_wamelink && function_exists( 'get_field' ) ) {
+		$global_whatsapp = get_field( 'whatsapp', 'option' );
+		if ( ! empty( $global_whatsapp ) ) {
+			$search          = array( ' ', '-', '(', ')' );
+			$number          = str_replace( $search, '', $global_whatsapp );
+			$number          = ltrim( $number, '+' );
+			$header_wamelink = 'https://wa.me/' . $number;
+		}
+	}
+?>
+
 <!DOCTYPE html>
 <html <?php language_attributes(); ?>>
 <head>
@@ -83,6 +124,9 @@ if ( ! session_id() ) {
 ?>
 	
 <body <?php body_class(); ?>>
+
+<?php wp_body_open(); ?>
+
 	<?php if ( $is_filial ) : ?>
 		<script>
 			<?php
@@ -99,53 +143,12 @@ if ( ! session_id() ) {
 		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 		<!-- End Google Tag Manager (noscript) -->
 	<?php endif; ?>
-
-<?php wp_body_open(); ?>
 	
 <a href="#main" class="visually-hidden-focusable"><?php esc_html_e( 'Skip to main content', 'incavel' ); ?></a>
 
 <div id="wrapper">
 	<header id="main-header">
-		<?php
-		// 1) Detecta domínio atual e se é filial (qualquer domínio diferente de incavel.com.br).
-		$public_host        = function_exists( 'incavel_get_current_public_host' ) ? incavel_get_current_public_host() : ( $_SERVER['HTTP_HOST'] ?? '' );
-		$public_host_no_www = preg_replace( '/^www\./', '', $public_host );
-		$is_filial          = ( $public_host_no_www && 'incavel.com.br' !== $public_host_no_www );
-
-		// 2) Logo da filial:
-		//    - primeiro tenta pelo domínio (helper PHP),
-		//    - se vazio, tenta sessão (setada em single-representantes),
-		//    - se ainda vazio, cai na logo padrão do tema no HTML abaixo.
-		$filial_logo = '';
-		if ( $is_filial && function_exists( 'incavel_get_filial_logo_for_current_domain' ) ) {
-			$filial_logo = incavel_get_filial_logo_for_current_domain();
-		}
-		if ( $is_filial && ! $filial_logo && ! empty( $_SESSION['filial_logo'] ) ) {
-			$filial_logo = $_SESSION['filial_logo'];
-		}
-
-		// 3) WhatsApp do header:
-		//    - cookie revenda_whatsapp (mesma "sessão" já usada em single-produto),
-		//    - se vazio, helper PHP por domínio,
-		//    - se vazio, WhatsApp global das opções do tema.
-		$header_wamelink = '';
-		if ( ! empty( $_COOKIE['revenda_whatsapp'] ) ) {
-			$header_wamelink = esc_url_raw( $_COOKIE['revenda_whatsapp'] );
-		}
-		if ( ! $header_wamelink && function_exists( 'incavel_get_revenda_whatsapp_link_for_current_domain' ) ) {
-			$header_wamelink = incavel_get_revenda_whatsapp_link_for_current_domain();
-		}
-		if ( ! $header_wamelink && function_exists( 'get_field' ) ) {
-			$global_whatsapp = get_field( 'whatsapp', 'option' );
-			if ( ! empty( $global_whatsapp ) ) {
-				$search          = array( ' ', '-', '(', ')' );
-				$number          = str_replace( $search, '', $global_whatsapp );
-				$number          = ltrim( $number, '+' );
-				$header_wamelink = 'https://wa.me/' . $number;
-			}
-		}
-		?>
-
+	
 		<nav id="header" class="d-none d-md-block navbar navbar-expand-md <?php echo esc_attr( $navbar_scheme ); if ( is_home() || is_front_page() ) : echo ' home'; endif; ?>">
 			<div class="container">
 				<a class="navbar-brand" href="/" title="<?php echo esc_attr( get_bloginfo( 'name', 'display' ) ); ?>" rel="home">
