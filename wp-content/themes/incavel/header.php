@@ -23,8 +23,10 @@ if ( ! session_id() ) {
 		$incavel_code_body = ! empty( $session_code_body ) ? $session_code_body : $field_code_body;
 	?>
 
-	<?php if ( ! empty( $incavel_meta_tags ) ) : ?>
-		<meta name="google-site-verification" content="<?php echo (string) $incavel_meta_tags; ?>" />
+	<?php if ( $is_filial ) : ?>
+		<?php if ( ! empty( $incavel_meta_tags ) ) : ?>
+			<meta name="google-site-verification" content="<?php echo (string) $incavel_meta_tags; ?>" />
+		<?php endif; ?>
 	<?php endif; ?>
 	
 	<meta charset="<?php bloginfo( 'charset' ); ?>">
@@ -50,14 +52,26 @@ if ( ! session_id() ) {
 
     <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/style-mobile.css" media="screen and (min-width: 320px) and (max-width: 767px)">
     <link rel="stylesheet" href="<?php echo get_template_directory_uri(); ?>/assets/style-desktop.css" media="screen and (min-width: 768px)">
+	
+		<?php if ( $is_filial ) : ?>
+			<script>
+				<?php
+				if ( ! empty( $incavel_code_head ) ) {
+					echo (string) $incavel_code_head; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
+			</script>
+		<?php endif; ?>
 
-	<script>
-		<?php
-		if ( ! empty( $incavel_code_head ) ) {
-			echo (string) $incavel_code_head; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
-		?>
-	</script>
+		<?php if ( ! $is_filial ) : ?>
+		<!-- Google Tag Manager -->
+			<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+			new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+			j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+			'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+			})(window,document,'script','dataLayer','GTM-KJN2SP2');</script>
+			<!-- End Google Tag Manager -->
+		<?php endif; ?>
 
 </head>
 
@@ -69,13 +83,23 @@ if ( ! session_id() ) {
 ?>
 	
 <body <?php body_class(); ?>>
-	<script>
-		<?php
-		if ( ! empty( $incavel_code_body ) ) {
-			echo (string) $incavel_code_body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-		}
-		?>
-	</script>
+	<?php if ( $is_filial ) : ?>
+		<script>
+			<?php
+			if ( ! empty( $incavel_code_body ) ) {
+				echo (string) $incavel_code_body; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+			?>
+		</script>
+	<?php endif; ?>
+
+	<?php if ( ! $is_filial ) : ?>
+		<!-- Google Tag Manager (noscript) -->
+		<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-KJN2SP2"
+		height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+		<!-- End Google Tag Manager (noscript) -->
+	<?php endif; ?>
+
 <?php wp_body_open(); ?>
 	
 <a href="#main" class="visually-hidden-focusable"><?php esc_html_e( 'Skip to main content', 'incavel' ); ?></a>
