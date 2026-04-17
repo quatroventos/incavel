@@ -177,7 +177,7 @@ the_post();
                 <div class="row mt-5 map-whatsapp d-flex align-items-center">
                     <div class="col d-flex align-items-center"><h4>Não encontrou o que procurava?</h4></div>
                     <div class="col d-flex align-items-center">
-                        <button onclick="window.open('<?php echo esc_url( $header_wamelink ); ?>', '_blank')">                    
+                        <button onclick="window.open('<?php the_field( 'whatsapp', 'option' ); ?>', '_blank')">                    
                             <img src="<?php echo get_stylesheet_directory_uri(); ?>/img/icons/whatsapp.svg"> Entre em contato!
                         </button>
                     </div>
