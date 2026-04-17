@@ -156,7 +156,7 @@ the_post();
     <!-- search -->
 
     <!-- map -->
-    <div class="container map-container">
+    <div class="container map-container mb-5">
         <img src="<?php echo get_stylesheet_directory_uri(); ?>/img/arrows/grey.svg" id="map-arrow1">
         <img src="<?php echo get_stylesheet_directory_uri(); ?>/img/arrows/ghost.svg" id="map-arrow2">
         <div class="row">
@@ -176,7 +176,11 @@ the_post();
 
                 <div class="row mt-5 map-whatsapp d-flex align-items-center">
                     <div class="col d-flex align-items-center"><h4>Não encontrou o que procurava?</h4></div>
-                    <div class="col d-flex align-items-center"><button><img src="<?php echo get_stylesheet_directory_uri(); ?>/img/icons/whatsapp.svg"> Entre em contato!</button></div>
+                    <div class="col d-flex align-items-center">
+                        <button onclick="window.open('<?php echo esc_url( $header_wamelink ); ?>', '_blank')">                    
+                            <img src="<?php echo get_stylesheet_directory_uri(); ?>/img/icons/whatsapp.svg"> Entre em contato!
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
